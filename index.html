@@ -506,7 +506,7 @@ const SB_KEY='sb_publishable_lv-K2d-7Xe6pNg82XUt1mQ_n6P8ZLhA';
 const {createClient}=supabase;
 const sb=createClient(SB_URL,SB_KEY);
 
-let user=null,profile=null,isAnon=false,activeCat=null,libCat=null;
+let user=null,profile=null,isAnon=false,activeCat=null,libCat=null,currentThreadId=null;
 let cats=[],notifs=[],unreadNotifs=0;
 const ADMIN_EMAILS=['lorenzohugo33@gmail.com'];
 
@@ -637,7 +637,7 @@ function threadCard(t,rc){
     ${cat?`<span class="tpill" style="${ps}">${cat.name}</span>`:''}${adm}</div></div>`;
 }
 
-async function openThreadById(id){nav('thread');const c=document.getElementById('thread-content');c.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+async function openThreadById(id){currentThreadId=id;nav('thread');const c=document.getElementById('thread-content');c.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
 const[{data:t},{data:reps}]=await Promise.all([
   sb.from('threads').select('*,profiles(username,avatar_initials),categories(name,color,text_color)').eq('id',id).single(),
   sb.from('replies').select('*,profiles(username,avatar_initials)').eq('thread_id',id).order('created_at')
@@ -740,12 +740,22 @@ function inlineConfirm(targetEl, msg, onYes){
 }
 async function deletePost(table,id,btn){
   if(!isAdmin())return;
-  if(!btn||btn.dataset.confirming!=='1'){if(btn){btn.dataset.confirming='1';const orig=btn.textContent;btn.textContent='¿Seguro?';btn.style.background='var(--c400)';btn.style.color='#fff';setTimeout(()=>{if(btn.dataset.confirming==='1'){btn.dataset.confirming='0';btn.textContent=orig;btn.style.background='';btn.style.color='';}},3000);}return;}
-  btn.dataset.confirming='0';
+  if(!btn||btn.dataset.confirming!=='1'){
+    if(btn){
+      btn.dataset.confirming='1';
+      const orig=btn.textContent;
+      btn.textContent='¿Seguro?';btn.style.background='var(--c400)';btn.style.color='#fff';
+      setTimeout(()=>{if(btn.dataset.confirming==='1'){btn.dataset.confirming='0';btn.textContent=orig;btn.style.background='';btn.style.color='';}},3000);
+    }
+    return;
+  }
+  btn.dataset.confirming='0';btn.textContent='...';btn.disabled=true;
   const{error}=await sb.from(table).delete().eq('id',id);
-  if(error){showToast('Error al eliminar','err');return;}
+  if(error){showToast('Error: '+error.message,'err');btn.disabled=false;return;}
   showToast('Eliminado','ok');
-  if(table==='threads'){nav('debates');loadDebates();}else{const tid=btn.dataset.tid;if(tid)openThreadById(tid);}
+  if(table==='threads'){currentThreadId=null;nav('debates');loadDebates();loadSidebar();}
+  else if(currentThreadId){openThreadById(currentThreadId);}
+  else{nav('debates');loadDebates();}
 }
 
 // ── LIKES ──
