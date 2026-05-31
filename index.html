@@ -418,7 +418,15 @@ body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh
       <div class="fg"><label class="fl">Título</label><input class="fi" id="lt" placeholder="El error de Descartes — Damasio"></div>
       <div class="fg"><label class="fl">Autor</label><input class="fi" id="la" placeholder="Autor o autores"></div>
       <div class="fg"><label class="fl">Reseña</label><textarea class="fi fta" id="ld" placeholder="¿Por qué lo recomiendas?" style="min-height:65px"></textarea></div>
-      <div class="fg"><label class="fl">URL del PDF</label><input class="fi" id="lu" placeholder="https://..."></div>
+      <div class="fg">
+        <label class="fl">PDF — sube un archivo o pega un link</label>
+        <div style="display:flex;gap:8px;margin-bottom:7px">
+          <button type="button" class="btn btn-s btn-sm" id="lib-tab-file" onclick="libTab('file')" style="flex:1">Subir archivo</button>
+          <button type="button" class="btn btn-s btn-sm" id="lib-tab-url" onclick="libTab('url')" style="flex:1">Pegar link</button>
+        </div>
+        <div id="lib-file-wrap"><input class="fi" type="file" id="lf" accept="application/pdf"><div id="lib-upload-status" style="font-size:11px;color:var(--tx3);margin-top:5px"></div></div>
+        <div id="lib-url-wrap" style="display:none"><input class="fi" id="lu" placeholder="https://drive.google.com/..."></div>
+      </div>
       <div class="fg"><label class="fl">Categoría</label><select class="fsel" id="lc"><option>Neurobiología</option><option>Psicoanálisis</option><option>Cognición</option><option>Desarrollo</option><option>Teoría</option><option>Clínica</option><option>Otro</option></select></div>
       <div class="mfoot"><label class="ach"><input type="checkbox" id="la2"> Anónimo</label><button class="btn btn-p" onclick="submitLib()">Agregar</button></div>
     </div>
@@ -654,8 +662,31 @@ g.innerHTML=data.map(item=>`<div class="lc" onclick="${item.file_url?`window.ope
   </div></div>`).join('');}
 
 async function deleteLib(id){if(!confirm('¿Eliminar?'))return;await sb.from('library').delete().eq('id',id);showToast('Eliminado','ok');loadLib();}
-function openLibModal(){document.getElementById('mo-lib').classList.add('open');}
-async function submitLib(){const t=document.getElementById('lt').value.trim(),a=document.getElementById('la').value.trim(),d=document.getElementById('ld').value.trim(),u=document.getElementById('lu').value.trim(),c=document.getElementById('lc').value,an=document.getElementById('la2').checked;if(!t){showToast('Título obligatorio','err');return;}const{error}=await sb.from('library').insert({title:t,author:a,description:d,file_url:u,category:c,uploaded_by:user.id,is_anonymous:an});if(error){showToast('Error','err');return;}closeM('mo-lib');['lt','la','ld','lu'].forEach(id=>document.getElementById(id).value='');showToast('Agregado','ok');loadLib();}
+function openLibModal(){document.getElementById('mo-lib').classList.add('open');libTab('file');}
+let libMode='file';
+function libTab(m){libMode=m;document.getElementById('lib-file-wrap').style.display=m==='file'?'block':'none';document.getElementById('lib-url-wrap').style.display=m==='url'?'block':'none';document.getElementById('lib-tab-file').style.background=m==='file'?'var(--p50)':'var(--bg2)';document.getElementById('lib-tab-url').style.background=m==='url'?'var(--p50)':'var(--bg2)';}
+async function submitLib(){
+  const t=document.getElementById('lt').value.trim(),a=document.getElementById('la').value.trim(),d=document.getElementById('ld').value.trim(),c=document.getElementById('lc').value,an=document.getElementById('la2').checked;
+  if(!t){showToast('Título obligatorio','err');return;}
+  let fileUrl=document.getElementById('lu').value.trim();
+  if(libMode==='file'){
+    const f=document.getElementById('lf').files[0];
+    if(f){
+      const status=document.getElementById('lib-upload-status');
+      status.textContent='Subiendo archivo...';status.style.color='var(--p600)';
+      const path=`${Date.now()}_${f.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+      const{error:upErr}=await sb.storage.from('library-pdfs').upload(path,f);
+      if(upErr){status.textContent='Error al subir: '+upErr.message;status.style.color='#E24B4A';return;}
+      const{data:pub}=sb.storage.from('library-pdfs').getPublicUrl(path);
+      fileUrl=pub.publicUrl;
+      status.textContent='Archivo subido ✓';status.style.color='var(--t400)';
+    }
+  }
+  const{error}=await sb.from('library').insert({title:t,author:a,description:d,file_url:fileUrl,category:c,uploaded_by:user.id,is_anonymous:an});
+  if(error){showToast('Error al guardar','err');return;}
+  closeM('mo-lib');['lt','la','ld','lu'].forEach(id=>document.getElementById(id).value='');document.getElementById('lf').value='';document.getElementById('lib-upload-status').textContent='';
+  showToast('Recurso agregado','ok');loadLib();
+}
 
 // ── VIDEO ──
 function getYtId(url){const m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);return m?m[1]:null;}
@@ -711,16 +742,31 @@ async function synthesize(wid){
   const{data:contribs}=await sb.from('wiki_contributions').select('content').eq('wiki_page_id',wid);
   if(!contribs?.length){showToast('Sin aportes para sintetizar','err');return;}
   const text=contribs.map((c,i)=>`Aporte ${i+1}: ${c.content}`).join('\n\n');
-  try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({contents:[{parts:[{text:`Eres un asistente académico de psicología. Los siguientes son apuntes de estudiantes de una clase. Genera un resumen académico, coherente y estructurado de máximo 300 palabras que integre todos los aportes. Usa lenguaje técnico apropiado:\n\n${text}`}]}]})
-    });
-    const d=await r.json();
-    const summary=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(summary){await sb.from('wiki_pages').update({ai_summary:summary,last_synthesized_at:new Date().toISOString()}).eq('id',wid);showToast('Síntesis generada','ok');openWikiDetail(wid);}
-    else showToast('La IA no respondió correctamente','err');
-  }catch(e){showToast('Error con la IA','err');console.error(e);}
+  const prompt=`Eres un asistente académico de psicología. Los siguientes son apuntes de estudiantes de una clase. Genera un resumen académico, coherente y estructurado de máximo 300 palabras que integre todos los aportes. Usa lenguaje técnico apropiado:\n\n${text}`;
+  const body=JSON.stringify({contents:[{parts:[{text:prompt}]}]});
+  const models=['gemini-2.0-flash','gemini-1.5-flash','gemini-1.5-flash-latest'];
+  // Try query-param auth then Bearer auth across models
+  for(const model of models){
+    const attempts=[
+      {url:`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,headers:{'Content-Type':'application/json'}},
+      {url:`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,headers:{'Content-Type':'application/json','Authorization':'Bearer '+GEMINI_KEY}},
+      {url:`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_KEY}}
+    ];
+    for(const att of attempts){
+      try{
+        const r=await fetch(att.url,{method:'POST',headers:att.headers,body});
+        const d=await r.json();
+        if(r.ok){
+          const summary=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+          if(summary){
+            await sb.from('wiki_pages').update({ai_summary:summary,last_synthesized_at:new Date().toISOString()}).eq('id',wid);
+            showToast('Síntesis generada ✓','ok');openWikiDetail(wid);return;
+          }
+        }
+      }catch(e){/* try next */}
+    }
+  }
+  showToast('La IA no funcionó con esta key. Revisa que sea formato AIzaSy','err');
 }
 
 function openWikiNew(){document.getElementById('mo-wiki-new').classList.add('open');}
