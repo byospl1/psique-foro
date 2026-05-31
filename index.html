@@ -627,7 +627,7 @@ function threadCard(t,rc){
   const avc=t.is_anonymous?'tav anon':'tav';const avs=t.is_anonymous?'':'background:var(--p50);color:var(--p600)';
   const who=t.is_anonymous?'<span class="ap">anónimo</span>':`<span>${t.profiles?.username||'usuario'}</span>`;
   const prev=t.body.length>160?t.body.slice(0,160)+'...':t.body;
-  const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="margin-left:auto;font-size:10px" onclick="event.stopPropagation();deletePost('threads','${t.id}')">Eliminar</button>`:'';
+  const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="margin-left:auto;font-size:10px" onclick="event.stopPropagation();deletePost('threads','${t.id}',this)">×</button>`:'';
   return`<div class="tc" onclick="openThreadById('${t.id}')">
     <div class="tc-body"><div class="${avc}" style="${avs}">${av}</div>
     <div style="flex:1"><div class="tc-who">${who}·<span>${timeAgo(t.created_at)}</span></div>
@@ -638,38 +638,115 @@ function threadCard(t,rc){
 }
 
 async function openThreadById(id){nav('thread');const c=document.getElementById('thread-content');c.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
-const[{data:t},{data:reps}]=await Promise.all([sb.from('threads').select('*,profiles(username,avatar_initials),categories(name,color,text_color)').eq('id',id).single(),sb.from('replies').select('*,profiles(username,avatar_initials)').eq('thread_id',id).order('created_at')]);
+const[{data:t},{data:reps}]=await Promise.all([
+  sb.from('threads').select('*,profiles(username,avatar_initials),categories(name,color,text_color)').eq('id',id).single(),
+  sb.from('replies').select('*,profiles(username,avatar_initials)').eq('thread_id',id).order('created_at')
+]);
 if(!t){c.innerHTML='<div class="empty"><i class="ti ti-alert-circle"></i><p>No encontrado</p></div>';return;}
 const cat=t.categories;const ps=cat?`background:${cat.color};color:${cat.text_color};font-size:11px`:'';
 const who=t.is_anonymous?'<span class="ap">anónimo</span>':`<strong>${t.profiles?.username}</strong>`;
-const adm=isAdmin()?`<button class="btn btn-danger btn-sm" onclick="deletePost('threads','${t.id}');nav('debates')">Eliminar hilo</button>`:'';
+const adm=isAdmin()?`<button class="btn btn-danger btn-sm" onclick="deletePost('threads','${t.id}',this)" style="font-size:11px">Eliminar hilo</button>`:'';
+// Build reply tree
+const roots=[];const byId={};
+(reps||[]).forEach(r=>{byId[r.id]={...r,children:[]};});
+(reps||[]).forEach(r=>{if(r.parent_reply_id&&byId[r.parent_reply_id])byId[r.parent_reply_id].children.push(byId[r.id]);else roots.push(byId[r.id]);});
 c.innerHTML=`<div style="background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);margin-bottom:14px;overflow:hidden">
   <div class="tdh"><button class="back-btn" onclick="nav('debates')"><i class="ti ti-arrow-left"></i> Debates</button>
   <div class="td-title">${t.title}</div>
   <div class="td-meta">${who}·<span>${timeAgo(t.created_at)}</span>${cat?`<span class="tpill" style="${ps}">${cat.name}</span>`:''}</div></div>
   <div style="padding:14px 16px;font-size:14px;line-height:1.8;color:var(--tx)">${t.body.replace(/\n/g,'<br>')}</div>
   <div style="padding:7px 15px;border-top:0.5px solid var(--br);display:flex;gap:10px;background:var(--bg2);align-items:center">
-    <button class="like-btn" onclick="likeIt('${t.id}','thread',this)"><i class="ti ti-heart"></i>${t.likes} me gusta</button>${adm}</div></div>
-<div style="font-size:13px;font-weight:500;color:var(--tx2);margin-bottom:9px">${reps?.length||0} respuestas</div>
-<div id="rlist">${(reps||[]).map(r=>replyCard(r)).join('')}</div>
+    <button class="like-btn" onclick="likeIt('${t.id}','thread',this)"><i class="ti ti-heart"></i>${t.likes} me gusta</button>${adm}
+  </div></div>
+<div style="font-size:13px;font-weight:500;color:var(--tx2);margin-bottom:9px">${reps?.length||0} respuesta${reps?.length!==1?'s':''}</div>
+<div id="rlist">${roots.map(r=>replyCard(r,id,0)).join('')}</div>
 <div style="background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:13px 15px;margin-top:13px">
-  <div style="font-size:13px;font-weight:500;margin-bottom:9px">Tu respuesta</div>
-  <textarea class="fi fta" id="rb" placeholder="Argumenta con evidencia, cita autores..." style="min-height:75px;margin-bottom:9px"></textarea>
+  <div style="font-size:13px;font-weight:500;margin-bottom:9px">Comentar en este hilo</div>
+  <textarea class="fi fta" id="rb" placeholder="Argumenta con evidencia, cita autores..." style="min-height:70px;margin-bottom:9px"></textarea>
   <div style="display:flex;align-items:center;justify-content:space-between">
     <label class="ach"><input type="checkbox" id="ra" ${isAnon?'checked':''}> Anónimo</label>
-    <button class="btn btn-p btn-sm" onclick="submitReply('${id}')">Responder</button></div></div>`;}
+    <button class="btn btn-p btn-sm" onclick="submitReply('${id}',null)">Comentar</button>
+  </div></div>`;}
 
-function replyCard(r){const av=r.is_anonymous?'<i class="ti ti-ghost" style="font-size:13px"></i>':(r.profiles?.avatar_initials||'??');const avc=r.is_anonymous?'tav anon':'tav';const avs=r.is_anonymous?'':'background:var(--t50);color:var(--t600)';const who=r.is_anonymous?'<span class="ap">anónimo</span>':`<strong>${r.profiles?.username}</strong>`;const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="deletePost('replies','${r.id}');openThreadById('${r.thread_id}')">Eliminar</button>`:'';
-return`<div class="rc"><div class="${avc}" style="${avs};width:30px;height:30px;font-size:10px">${av}</div><div style="flex:1"><div class="rm">${who}·${timeAgo(r.created_at)}</div><div class="rb">${r.body.replace(/\n/g,'<br>')}</div><div style="margin-top:5px;display:flex;gap:8px;align-items:center"><button class="like-btn" onclick="likeIt('${r.id}','reply',this)"><i class="ti ti-heart"></i>${r.likes}</button>${adm}</div></div></div>`;}
+function replyCard(r,tid,depth){
+  const maxDepth=3;
+  const av=r.is_anonymous?'<i class="ti ti-ghost" style="font-size:12px"></i>':(r.profiles?.avatar_initials||'??');
+  const avc=r.is_anonymous?'tav anon':'tav';
+  const avs=r.is_anonymous?'':'background:var(--t50);color:var(--t600)';
+  const who=r.is_anonymous?'<span class="ap">anónimo</span>':`<strong>${r.profiles?.username}</strong>`;
+  const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:9px" data-tid="${tid}" onclick="deletePost('replies','${r.id}',this)">×</button>`:'';
+  const indent=depth>0?`margin-left:${Math.min(depth,maxDepth)*20}px;border-left:2px solid var(--p100);padding-left:10px`:'';
+  const children=(r.children||[]).map(child=>replyCard(child,tid,depth+1)).join('');
+  return`<div class="rc" id="rc-${r.id}" style="${indent};align-items:flex-start;flex-direction:column;padding:0;background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);margin-bottom:8px;overflow:hidden">
+    <div style="display:flex;gap:10px;padding:11px 13px;width:100%">
+      <div class="${avc}" style="${avs};width:28px;height:28px;font-size:10px;flex-shrink:0">${av}</div>
+      <div style="flex:1;min-width:0">
+        <div class="rm" style="margin-bottom:4px">${who}<span style="color:var(--tx3);margin-left:5px;font-size:10px">${timeAgo(r.created_at)}</span></div>
+        <div class="rb">${r.body.replace(/\n/g,'<br>')}</div>
+        <div style="display:flex;gap:10px;margin-top:7px;align-items:center;flex-wrap:wrap">
+          <button class="like-btn" onclick="likeIt('${r.id}','reply',this)"><i class="ti ti-heart"></i>${r.likes}</button>
+          <button onclick="toggleSubreply('${r.id}','${tid}')" style="background:none;border:none;font-size:11px;color:var(--p600);cursor:pointer;display:flex;align-items:center;gap:3px;font-family:var(--f)"><i class="ti ti-message-reply" style="font-size:13px"></i>Responder</button>
+          ${adm}
+        </div>
+        <div id="sr-box-${r.id}" style="display:none;margin-top:9px">
+          <textarea class="fi fta" id="sr-ta-${r.id}" placeholder="Respondiendo a ${r.is_anonymous?'anónimo':r.profiles?.username||'usuario'}..." style="min-height:60px;margin-bottom:7px;font-size:12px"></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <label class="ach" style="font-size:11px"><input type="checkbox" id="sr-anon-${r.id}" ${isAnon?'checked':''}> Anónimo</label>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-s btn-sm" onclick="toggleSubreply('${r.id}','${tid}')">Cancelar</button>
+              <button class="btn btn-p btn-sm" onclick="submitReply('${tid}','${r.id}')">Publicar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    ${children?`<div style="padding:0 13px 11px;width:100%">${children}</div>`:''}
+  </div>`;}
 
-async function submitReply(tid){const b=document.getElementById('rb').value.trim();const a=document.getElementById('ra').checked;if(!b){showToast('Escribe algo antes','err');return;}const{error}=await sb.from('replies').insert({thread_id:tid,author_id:user.id,body:b,is_anonymous:a});if(error){showToast('Error','err');return;}showToast('Respuesta publicada','ok');openThreadById(tid);}
+function toggleSubreply(rid,tid){
+  const box=document.getElementById(`sr-box-${rid}`);
+  if(!box)return;
+  const open=box.style.display==='none';
+  box.style.display=open?'block':'none';
+  if(open)document.getElementById(`sr-ta-${rid}`)?.focus();
+}
+
+async function submitReply(tid,parentId){
+  const ta=parentId?document.getElementById(`sr-ta-${parentId}`):document.getElementById('rb');
+  const anonEl=parentId?document.getElementById(`sr-anon-${parentId}`):document.getElementById('ra');
+  const b=ta?.value.trim();const a=anonEl?.checked||isAnon;
+  if(!b){showToast('Escribe algo antes de responder','err');return;}
+  const payload={thread_id:tid,author_id:user.id,body:b,is_anonymous:a};
+  if(parentId)payload.parent_reply_id=parentId;
+  const{error}=await sb.from('replies').insert(payload);
+  if(error){showToast('Error al publicar','err');return;}
+  showToast('Publicado','ok');
+  openThreadById(tid);
+}
+
 
 // ── NEW THREAD ──
 function openThread(){document.getElementById('nt-a').checked=isAnon;document.getElementById('mo-thread').classList.add('open');}
 async function submitThread(){const t=document.getElementById('nt-t').value.trim(),b=document.getElementById('nt-b').value.trim(),c=document.getElementById('nt-c').value,a=document.getElementById('nt-a').checked;if(!t||!b){showToast('Título y contenido obligatorios','err');return;}const{error}=await sb.from('threads').insert({title:t,body:b,category_id:parseInt(c),author_id:user.id,is_anonymous:a});if(error){showToast('Error al publicar','err');return;}closeM('mo-thread');document.getElementById('nt-t').value='';document.getElementById('nt-b').value='';showToast('Hilo publicado','ok');loadDebates();loadSidebar();}
 
 // ── ADMIN DELETE ──
-async function deletePost(table,id){if(!isAdmin()||!confirm('¿Eliminar este contenido?'))return;const{error}=await sb.from(table).delete().eq('id',id);if(error){showToast('Error al eliminar','err');return;}showToast('Eliminado','ok');if(table==='threads'){loadDebates();}else{loadDebates();}}
+// ── INLINE CONFIRM (reemplaza confirm() para no bloquear UI) ──
+function inlineConfirm(targetEl, msg, onYes){
+  if(targetEl.dataset.confirming==='1'){onYes();targetEl.dataset.confirming='0';targetEl.textContent='×';targetEl.style.background='';return;}
+  targetEl.dataset.confirming='1';
+  const orig=targetEl.textContent;
+  targetEl.textContent='¿Seguro?';targetEl.style.background='var(--c400)';targetEl.style.color='#fff';
+  setTimeout(()=>{if(targetEl.dataset.confirming==='1'){targetEl.dataset.confirming='0';targetEl.textContent=orig;targetEl.style.background='';targetEl.style.color='';}},3000);
+}
+async function deletePost(table,id,btn){
+  if(!isAdmin())return;
+  if(!btn||btn.dataset.confirming!=='1'){if(btn){btn.dataset.confirming='1';const orig=btn.textContent;btn.textContent='¿Seguro?';btn.style.background='var(--c400)';btn.style.color='#fff';setTimeout(()=>{if(btn.dataset.confirming==='1'){btn.dataset.confirming='0';btn.textContent=orig;btn.style.background='';btn.style.color='';}},3000);}return;}
+  btn.dataset.confirming='0';
+  const{error}=await sb.from(table).delete().eq('id',id);
+  if(error){showToast('Error al eliminar','err');return;}
+  showToast('Eliminado','ok');
+  if(table==='threads'){nav('debates');loadDebates();}else{const tid=btn.dataset.tid;if(tid)openThreadById(tid);}
+}
 
 // ── LIKES ──
 async function likeIt(id,type,btn){const{error}=await sb.from('likes').insert({user_id:user.id,target_id:id,target_type:type});if(error)return;const cur=parseInt(btn.textContent.match(/\d+/)?.[0]||0);await sb.from(type==='thread'?'threads':'replies').update({likes:cur+1}).eq('id',id);btn.classList.add('liked');btn.innerHTML=`<i class="ti ti-heart"></i>${cur+1}`;}
@@ -711,12 +788,12 @@ g.innerHTML=data.map(item=>{
     <span class="lcat">${item.category||'General'}</span>
     ${item.file_url?'<span style="font-size:11px;color:var(--p600);display:flex;align-items:center;gap:2px"><i class="ti ti-download" style="font-size:12px"></i>PDF</span>':''}
     <button class="like-btn" onclick="event.stopPropagation();likeIt('${item.id}','library',this)"><i class="ti ti-heart"></i>${item.likes}</button>
-    ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteLib('${item.id}')">×</button>`:''}
+    ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteLib('${item.id}',this)">×</button>`:''}
   </div>
   <div style="padding:7px 13px;border-top:0.5px solid var(--br);background:var(--bg2)">${voteWidget('library',item.id,vc[item.id])}</div>
   </div>`;}).join('');}
 
-async function deleteLib(id){if(!confirm('¿Eliminar?'))return;await sb.from('library').delete().eq('id',id);showToast('Eliminado','ok');loadLib();}
+async function deleteLib(id,btn){if(!btn||btn.dataset.confirming!=='1'){if(btn){btn.dataset.confirming='1';btn.textContent='¿Seguro?';btn.style.background='var(--c400)';btn.style.color='#fff';setTimeout(()=>{if(btn.dataset.confirming==='1'){btn.dataset.confirming='0';btn.textContent='×';btn.style.background='';btn.style.color='';}},3000);}return;}btn.dataset.confirming='0';await sb.from('library').delete().eq('id',id);showToast('Eliminado','ok');loadLib();}
 function openLibModal(){document.getElementById('mo-lib').classList.add('open');libTab('file');renderTrimPicker('lib-trim-tags',[profile?.trimestre?parseInt(profile.trimestre):4]);}
 let libMode='file';
 function libTab(m){libMode=m;document.getElementById('lib-file-wrap').style.display=m==='file'?'block':'none';document.getElementById('lib-url-wrap').style.display=m==='url'?'block':'none';document.getElementById('lib-tab-file').style.background=m==='file'?'var(--p50)':'var(--bg2)';document.getElementById('lib-tab-url').style.background=m==='url'?'var(--p50)':'var(--bg2)';}
@@ -756,12 +833,12 @@ g.innerHTML=data.map(v=>`<div class="vc" onclick="playVid('${v.id}')">
   <div style="margin-top:6px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">
     <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--pk50);color:var(--pk600)">${v.category||'General'}</span>
     <button class="like-btn" onclick="event.stopPropagation();likeIt('${v.id}','video',this)"><i class="ti ti-heart"></i>${v.likes}</button>
-    ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteVid('${v.id}')">×</button>`:''}
+    ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteVid('${v.id}',this)">×</button>`:''}
   </div>
   <div style="margin-top:8px">${voteWidget('video',v.id,vvc[v.id])}</div>
   </div></div>`).join('');}
 
-async function deleteVid(id){if(!confirm('¿Eliminar?'))return;await sb.from('videos').delete().eq('id',id);showToast('Eliminado','ok');loadVids();}
+async function deleteVid(id,btn){if(!btn||btn.dataset.confirming!=='1'){if(btn){btn.dataset.confirming='1';btn.textContent='¿Seguro?';btn.style.background='var(--c400)';btn.style.color='#fff';setTimeout(()=>{if(btn.dataset.confirming==='1'){btn.dataset.confirming='0';btn.textContent='×';btn.style.background='';btn.style.color='';}},3000);}return;}btn.dataset.confirming='0';await sb.from('videos').delete().eq('id',id);showToast('Eliminado','ok');loadVids();}
 async function playVid(id){nav('vplayer');const{data:v}=await sb.from('videos').select('*').eq('id',id).single();if(!v)return;document.getElementById('vplayer-content').innerHTML=`<div class="vembed" style="border-radius:var(--rl);overflow:hidden;margin-bottom:14px"><iframe src="https://www.youtube.com/embed/${v.youtube_id}?autoplay=1" allowfullscreen allow="autoplay"></iframe></div><h2 style="font-size:19px;font-family:var(--fs);color:var(--tx);margin-bottom:5px">${v.title}</h2>${v.description?`<p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-top:7px">${v.description}</p>`:''}<div style="margin-top:11px;display:flex;align-items:center;gap:9px"><span style="font-size:11px;padding:3px 9px;border-radius:20px;background:var(--pk50);color:var(--pk600)">${v.category||'General'}</span><button class="like-btn" onclick="likeIt('${v.id}','video',this)"><i class="ti ti-heart"></i>${v.likes} me gusta</button></div>`;}
 function openVidModal(){document.getElementById('mo-vid').classList.add('open');}
 async function submitVid(){const u=document.getElementById('vu').value.trim(),t=document.getElementById('vt2').value.trim(),d=document.getElementById('vd').value.trim(),c=document.getElementById('vc2').value,a=document.getElementById('va').checked;const yid=getYtId(u);if(!u||!t){showToast('URL y título obligatorios','err');return;}if(!yid){showToast('URL de YouTube no válida','err');return;}const{error}=await sb.from('videos').insert({title:t,youtube_url:u,youtube_id:yid,description:d,category:c,added_by:user.id,is_anonymous:a});if(error){showToast('Error','err');return;}closeM('mo-vid');['vu','vt2','vd'].forEach(id=>document.getElementById(id).value='');showToast('Video agregado','ok');loadVids();}
@@ -770,10 +847,10 @@ async function submitVid(){const u=document.getElementById('vu').value.trim(),t=
 async function loadWiki(){const l=document.getElementById('wiki-list');l.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';const{data:pages}=await sb.from('wiki_pages').select('*').order('class_number',{ascending:false});if(!pages?.length){l.innerHTML='<div class="empty"><i class="ti ti-notes"></i><p>Sin páginas wiki. ¡Crea la primera!</p></div>';return;}
 const cc=await Promise.all(pages.map(p=>sb.from('wiki_contributions').select('id,profiles(username,avatar_initials)',{count:'exact'}).eq('wiki_page_id',p.id)));
 const cols=['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B'];
-l.innerHTML=pages.map((p,i)=>{const contribs=cc[i].data||[];const cnt=cc[i].count||0;const avs=contribs.slice(0,4).map((c,j)=>{const[bg,co]=cols[j%4].split(':');return`<div class="cav2" style="background:${bg};color:${co}">${c.profiles?.avatar_initials||'??'}</div>`;}).join('');const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteWikiPage('${p.id}')">×</button>`:'';
+l.innerHTML=pages.map((p,i)=>{const contribs=cc[i].data||[];const cnt=cc[i].count||0;const avs=contribs.slice(0,4).map((c,j)=>{const[bg,co]=cols[j%4].split(':');return`<div class="cav2" style="background:${bg};color:${co}">${c.profiles?.avatar_initials||'??'}</div>`;}).join('');const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteWikiPage('${p.id}',this)">×</button>`:'';
 return`<div class="wpc" onclick="openWikiDetail('${p.id}')"><div class="wpch"><div><div class="wpct">Clase ${p.class_number||''} — ${p.class_name}</div><div class="wpcm">${cnt} aporte${cnt!==1?'s':''} · ${timeAgo(p.created_at)}</div></div><div style="display:flex;gap:6px;align-items:center"><div class="aib" style="background:var(--t50);color:var(--t600);border-color:var(--t100)"><i class="ti ti-users-group"></i>Colaborativo</div>${adm}</div></div>${avs?`<div class="cavas">${avs}<span class="ct">${cnt} contribución${cnt!==1?'es':''}</span></div>`:''}</div>`;}).join('');}
 
-async function deleteWikiPage(id){if(!confirm('¿Eliminar esta página?'))return;await sb.from('wiki_contributions').delete().eq('wiki_page_id',id);await sb.from('wiki_pages').delete().eq('id',id);showToast('Página eliminada','ok');loadWiki();}
+async function deleteWikiPage(id,btn){if(!btn||btn.dataset.confirming!=='1'){if(btn){btn.dataset.confirming='1';btn.textContent='¿Seguro?';btn.style.background='var(--c400)';btn.style.color='#fff';setTimeout(()=>{if(btn.dataset.confirming==='1'){btn.dataset.confirming='0';btn.textContent='×';btn.style.background='';btn.style.color='';}},3000);}return;}btn.dataset.confirming='0';await sb.from('wiki_contributions').delete().eq('wiki_page_id',id);await sb.from('wiki_pages').delete().eq('id',id);showToast('Página eliminada','ok');loadWiki();}
 
 async function openWikiDetail(id){nav('wiki-detail');const c=document.getElementById('wiki-detail');c.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
 const[{data:page},{data:contribs}]=await Promise.all([sb.from('wiki_pages').select('*').eq('id',id).single(),sb.from('wiki_contributions').select('*,profiles(username,avatar_initials)').eq('wiki_page_id',id).order('created_at',{ascending:false})]);
@@ -797,11 +874,11 @@ c.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-b
 <div style="font-size:13px;font-weight:500;color:var(--tx2);margin:16px 0 9px">${n} aporte${n!==1?'s':''} de la comunidad</div>
 <div>${(contribs||[]).map(co=>{
   const who=co.is_anonymous?'Anónimo':(co.profiles?.username||'Usuario');
-  const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:9px" onclick="deleteContrib('${co.id}','${id}')">×</button>`:'';
+  const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:9px" onclick="deleteContrib('${co.id}','${id}',this)">×</button>`:'';
   return`<div class="ci"><div class="cim" style="display:flex;align-items:center;gap:6px">${who} · ${timeAgo(co.created_at)}<span style="margin-left:auto">${adm}</span></div><div class="cib">${co.content.replace(/\n/g,'<br>')}</div><div style="margin-top:8px">${voteWidget('wiki_contribution',co.id,cvc[co.id])}</div></div>`;
 }).join('')||'<div class="empty" style="padding:18px"><i class="ti ti-pencil"></i><p>Sé el primero en aportar apuntes</p></div>'}</div>`;}
 
-async function deleteContrib(cid,wid){if(!confirm('¿Eliminar este apunte?'))return;await sb.from('wiki_contributions').delete().eq('id',cid);showToast('Apunte eliminado','ok');openWikiDetail(wid);}
+async function deleteContrib(cid,wid,btn){if(!btn||btn.dataset.confirming!=='1'){if(btn){btn.dataset.confirming='1';btn.textContent='¿Seguro?';btn.style.background='var(--c400)';btn.style.color='#fff';setTimeout(()=>{if(btn.dataset.confirming==='1'){btn.dataset.confirming='0';btn.textContent='×';btn.style.background='';btn.style.color='';}},3000);}return;}btn.dataset.confirming='0';await sb.from('wiki_contributions').delete().eq('id',cid);showToast('Apunte eliminado','ok');openWikiDetail(wid);}
 
 async function submitContrib(wid){
   const b=document.getElementById('cb').value.trim();const a=document.getElementById('ca').checked;
