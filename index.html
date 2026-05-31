@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psique — Foro Académico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --purple-50: #EEEDFE; --purple-100: #CECBF6; --purple-200: #AFA9EC;
+  --purple-400: #7F77DD; --purple-600: #534AB7; --purple-800: #3C3489; --purple-900: #26215C;
+  --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-400: #1D9E75; --teal-600: #0F6E56; --teal-900: #04342C;
+  --coral-50: #FAECE7; --coral-100: #F5C4B3; --coral-400: #D85A30; --coral-600: #993C1D;
+  --pink-50: #FBEAF0; --pink-400: #D4537E; --pink-600: #993556;
+  --amber-50: #FAEEDA; --amber-400: #BA7517; --amber-600: #854F0B;
+  --blue-50: #E6F1FB; --blue-400: #378ADD; --blue-600: #185FA5;
+  --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-400: #888780; --gray-600: #5F5E5A;
+  --bg: #ffffff; --bg2: #f8f7f5; --bg3: #f1efe8;
+  --text: #1a1a1a; --text2: #5a5a5a; --text3: #999;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+  --radius: 10px; --radius-lg: 14px;
+  --font: 'DM Sans', sans-serif; --font-serif: 'DM Serif Display', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg2); color: var(--text); min-height: 100vh; }
+
+/* TOPBAR */
+.topbar { background: var(--purple-900); padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 16px; position: sticky; top: 0; z-index: 100; }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--purple-200); display: flex; align-items: center; justify-content: center; }
+.logo-icon i { font-size: 18px; color: var(--purple-900); }
+.logo-name { font-family: var(--font-serif); font-size: 20px; color: #fff; letter-spacing: -0.3px; }
+.logo-badge { font-size: 10px; color: var(--purple-400); background: var(--purple-800); padding: 2px 7px; border-radius: 20px; }
+.topbar-nav { display: flex; gap: 2px; margin-left: 8px; }
+.tnav { padding: 6px 12px; font-size: 13px; color: var(--purple-400); border-radius: 7px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; border: none; background: none; font-family: var(--font); }
+.tnav i { font-size: 15px; }
+.tnav:hover { background: var(--purple-800); color: var(--purple-100); }
+.tnav.active { background: var(--bg); color: var(--purple-600); font-weight: 500; }
+.tnav .nbadge { background: var(--pink-400); color: #fff; font-size: 9px; padding: 1px 5px; border-radius: 20px; margin-left: 2px; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.anon-toggle { display: flex; align-items: center; gap: 5px; background: var(--purple-800); border: 0.5px solid var(--purple-600); border-radius: 20px; padding: 5px 11px; cursor: pointer; color: var(--purple-200); font-size: 12px; font-family: var(--font); transition: all 0.15s; }
+.anon-toggle.on { background: var(--purple-600); color: #fff; }
+.anon-toggle i { font-size: 14px; }
+.user-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--teal-400); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--teal-900); cursor: pointer; border: none; letter-spacing: 0.3px; }
+.auth-btn { font-size: 12px; padding: 6px 14px; border-radius: 7px; border: 0.5px solid var(--purple-400); background: transparent; color: var(--purple-200); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+.auth-btn:hover { background: var(--purple-800); }
+.auth-btn.primary { background: var(--purple-600); color: #fff; border-color: var(--purple-600); }
+.auth-btn.primary:hover { background: var(--purple-800); }
+
+/* LAYOUT */
+.page { display: none; }
+.page.active { display: block; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
+.two-col { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+
+/* CARDS */
+.card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+.card-body { padding: 16px; }
+
+/* COMPOSE */
+.compose-box { background: var(--bg); border: 0.5px solid var(--purple-200); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 16px; cursor: pointer; transition: border-color 0.15s; }
+.compose-box:hover { border-color: var(--purple-400); }
+.compose-inner { display: flex; align-items: center; gap: 10px; }
+.compose-av { width: 30px; height: 30px; border-radius: 50%; background: var(--teal-400); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--teal-900); flex-shrink: 0; }
+.compose-inner.anon-mode .compose-av { background: var(--gray-50); color: var(--gray-600); border: 1px dashed var(--gray-100); }
+.compose-placeholder { font-size: 13px; color: var(--text3); flex: 1; }
+.compose-chips { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--border); }
+.chip { font-size: 11px; padding: 3px 9px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text2); display: flex; align-items: center; gap: 3px; background: var(--bg2); }
+.chip i { font-size: 12px; }
+
+/* FILTROS */
+.filters { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.ftag { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text2); cursor: pointer; transition: all 0.15s; background: var(--bg); }
+.ftag:hover { border-color: var(--purple-400); color: var(--purple-600); }
+.ftag.active { background: var(--purple-900); color: var(--purple-100); border-color: var(--purple-900); }
+
+/* THREADS */
+.thread-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 10px; overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+.thread-card:hover { border-color: var(--purple-200); transform: translateY(-1px); }
+.tc-body { padding: 14px 16px 10px; display: flex; gap: 12px; }
+.tc-av { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+.tc-av.anon { background: var(--gray-50); color: var(--gray-600); border: 1px dashed var(--gray-100); }
+.tc-meta { font-size: 11px; color: var(--text3); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.anon-pill { background: var(--gray-50); color: var(--gray-600); font-size: 10px; padding: 1px 6px; border-radius: 4px; border: 0.5px solid var(--gray-100); }
+.tc-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 5px; }
+.tc-preview { font-size: 12px; color: var(--text2); line-height: 1.55; }
+.tc-footer { padding: 7px 16px; border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 12px; background: var(--bg2); }
+.tc-stat { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 3px; }
+.tc-stat i { font-size: 13px; }
+.topic-pill { margin-left: auto; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+
+/* SIDEBAR WIDGETS */
+.sw { border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 12px; }
+.sw-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+.sw-label i { font-size: 13px; }
+.sw-item { font-size: 12px; padding: 5px 0; border-bottom: 0.5px solid rgba(0,0,0,0.06); display: flex; align-items: center; gap: 6px; line-height: 1.4; }
+.sw-item:last-child { border-bottom: none; padding-bottom: 0; }
+.sw-item i { font-size: 13px; flex-shrink: 0; }
+.sw.hot { background: var(--coral-50); border: 0.5px solid var(--coral-100); }
+.sw.hot .sw-label { color: var(--coral-600); }
+.sw.hot .sw-item { color: var(--coral-600); border-color: var(--coral-100); }
+.sw.hot .sw-item i { color: var(--coral-400); }
+.sw.members { background: var(--teal-50); border: 0.5px solid var(--teal-100); }
+.sw.members .sw-label { color: var(--teal-600); }
+.sw.wiki-sw { background: var(--purple-50); border: 0.5px solid var(--purple-100); }
+.sw.wiki-sw .sw-label { color: var(--purple-800); }
+.sw.wiki-sw .sw-item { color: var(--purple-600); border-color: var(--purple-100); }
+.sw.wiki-sw .sw-item i { color: var(--purple-400); }
+.member-avatars { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.mav { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; border: 2px solid var(--teal-50); }
+.act-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(38,33,92,0.45); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--bg); border-radius: var(--radius-lg); width: 100%; max-width: 560px; overflow: hidden; }
+.modal-header { padding: 16px 20px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--purple-900); }
+.modal-header h2 { font-size: 15px; font-weight: 500; color: #fff; font-family: var(--font); }
+.modal-close { background: none; border: none; color: var(--purple-300); cursor: pointer; font-size: 20px; line-height: 1; padding: 0; }
+.modal-body { padding: 20px; }
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; display: block; }
+.form-input { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 13px; font-family: var(--font); color: var(--text); background: var(--bg); transition: border-color 0.15s; }
+.form-input:focus { outline: none; border-color: var(--purple-400); }
+.form-textarea { resize: vertical; min-height: 100px; }
+.form-select { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 13px; font-family: var(--font); color: var(--text); background: var(--bg); }
+.form-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
+.anon-check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); cursor: pointer; }
+.anon-check input { accent-color: var(--purple-600); }
+.btn { padding: 8px 18px; border-radius: var(--radius); font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer; transition: all 0.15s; border: none; }
+.btn-primary { background: var(--purple-600); color: #fff; }
+.btn-primary:hover { background: var(--purple-800); }
+.btn-secondary { background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border2); }
+.btn-secondary:hover { background: var(--bg3); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* THREAD DETAIL */
+.thread-detail-header { background: var(--purple-900); padding: 20px 24px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.back-btn { display: flex; align-items: center; gap: 5px; color: var(--purple-300); font-size: 12px; cursor: pointer; background: none; border: none; font-family: var(--font); margin-bottom: 12px; padding: 0; }
+.back-btn:hover { color: var(--purple-100); }
+.thread-detail-title { font-family: var(--font-serif); font-size: 24px; color: #fff; line-height: 1.3; margin-bottom: 8px; }
+.thread-detail-meta { font-size: 12px; color: var(--purple-300); display: flex; gap: 12px; flex-wrap: wrap; }
+.reply-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; }
+.reply-body { font-size: 13px; color: var(--text); line-height: 1.65; margin-top: 4px; }
+.reply-meta { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+.reply-compose { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-top: 14px; }
+
+/* BIBLIOTECA */
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.lib-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.15s, border-color 0.15s; cursor: pointer; }
+.lib-card:hover { transform: translateY(-2px); border-color: var(--teal-100); }
+.lib-cover { height: 80px; background: var(--purple-50); display: flex; align-items: center; justify-content: center; border-bottom: 0.5px solid var(--border); }
+.lib-cover i { font-size: 32px; color: var(--purple-400); }
+.lib-info { padding: 12px 14px; }
+.lib-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; line-height: 1.35; }
+.lib-author { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+.lib-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.lib-footer { padding: 8px 14px; border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 8px; background: var(--bg2); }
+.lib-cat { font-size: 10px; padding: 2px 7px; border-radius: 20px; background: var(--teal-50); color: var(--teal-600); }
+
+/* VIDEOTECA */
+.vid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.vid-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.15s, border-color 0.15s; cursor: pointer; }
+.vid-card:hover { transform: translateY(-2px); border-color: var(--pink-400); }
+.vid-thumb { position: relative; padding-bottom: 56.25%; background: var(--gray-50); }
+.vid-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.vid-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(38,33,92,0.4); }
+.vid-play i { font-size: 40px; color: #fff; }
+.vid-info { padding: 12px 14px; }
+.vid-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; line-height: 1.35; }
+.vid-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.vid-embed { position: relative; padding-bottom: 56.25%; height: 0; }
+.vid-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+/* WIKI */
+.wiki-page-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
+.wiki-page-card:hover { border-color: var(--purple-200); }
+.wpc-header { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+.wpc-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.wpc-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.ai-badge { font-size: 10px; background: var(--purple-50); color: var(--purple-600); padding: 2px 7px; border-radius: 5px; border: 0.5px solid var(--purple-100); display: flex; align-items: center; gap: 3px; }
+.ai-badge i { font-size: 11px; }
+.wpc-summary { padding: 0 16px 14px; font-size: 12px; color: var(--text2); line-height: 1.65; border-top: 0.5px solid var(--border); padding-top: 12px; }
+.contrib-avatars { display: flex; gap: 3px; align-items: center; padding: 8px 16px; border-top: 0.5px solid var(--border); background: var(--bg2); }
+.cav { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 600; border: 1.5px solid var(--bg2); }
+.contrib-text { font-size: 10px; color: var(--text3); margin-left: 5px; }
+
+/* WIKI DETAIL */
+.wiki-contrib-box { background: var(--purple-50); border: 0.5px solid var(--purple-100); border-radius: var(--radius-lg); padding: 14px 16px; margin-top: 14px; }
+.wiki-contrib-label { font-size: 12px; font-weight: 500; color: var(--purple-800); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.contrib-list { margin-top: 12px; }
+.contrib-item { background: var(--bg); border: 0.5px solid var(--purple-100); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; }
+.contrib-item-meta { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.contrib-item-body { font-size: 12px; color: var(--text); line-height: 1.6; }
+.ai-summary-box { background: var(--bg); border: 2px solid var(--purple-200); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 16px; }
+.ai-summary-label { font-size: 11px; font-weight: 600; color: var(--purple-600); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.ai-summary-label i { font-size: 14px; }
+.ai-summary-text { font-size: 13px; color: var(--text); line-height: 1.75; font-family: var(--font-serif); font-style: italic; }
+
+/* AUTH */
+.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--purple-900); padding: 20px; }
+.auth-card { background: var(--bg); border-radius: var(--radius-lg); width: 100%; max-width: 400px; overflow: hidden; }
+.auth-card-header { background: var(--purple-900); padding: 28px 28px 20px; text-align: center; }
+.auth-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
+.auth-logo-icon { width: 38px; height: 38px; border-radius: 11px; background: var(--purple-200); display: flex; align-items: center; justify-content: center; }
+.auth-logo-icon i { font-size: 22px; color: var(--purple-900); }
+.auth-logo-name { font-family: var(--font-serif); font-size: 26px; color: #fff; }
+.auth-subtitle { font-size: 12px; color: var(--purple-300); }
+.auth-body { padding: 24px 28px; }
+.auth-tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); margin-bottom: 20px; }
+.auth-tab { flex: 1; padding: 8px; text-align: center; font-size: 13px; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; }
+.auth-tab.active { color: var(--purple-600); border-bottom-color: var(--purple-600); font-weight: 500; }
+.auth-msg { font-size: 12px; color: var(--text2); text-align: center; margin-top: 12px; }
+.auth-msg.error { color: #E24B4A; }
+.auth-msg.success { color: var(--teal-400); }
+
+/* LOADING / EMPTY */
+.loading { text-align: center; padding: 40px; color: var(--text3); font-size: 13px; }
+.loading i { font-size: 28px; display: block; margin-bottom: 8px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty { text-align: center; padding: 40px; color: var(--text3); }
+.empty i { font-size: 36px; display: block; margin-bottom: 10px; color: var(--purple-200); }
+.empty p { font-size: 13px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--purple-900); color: #fff; padding: 10px 16px; border-radius: var(--radius); font-size: 13px; z-index: 999; display: flex; align-items: center; gap: 8px; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast i { font-size: 16px; }
+.toast.success i { color: var(--teal-400); }
+.toast.error i { color: #F09595; }
+
+/* MISC */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.section-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.section-action { font-size: 12px; color: var(--purple-600); cursor: pointer; background: none; border: none; font-family: var(--font); display: flex; align-items: center; gap: 4px; }
+.section-action:hover { text-decoration: underline; }
+hr { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
+.like-btn { background: none; border: none; font-size: 11px; color: var(--text3); cursor: pointer; display: flex; align-items: center; gap: 3px; font-family: var(--font); padding: 0; transition: color 0.15s; }
+.like-btn:hover, .like-btn.liked { color: var(--pink-400); }
+.like-btn i { font-size: 14px; }
+
+@media (max-width: 768px) {
+  .two-col { grid-template-columns: 1fr; }
+  .topbar-nav { display: none; }
+  .container { padding: 16px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH PAGE -->
+<div id="auth-page" class="auth-page" style="display:none;">
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <div class="auth-logo">
+        <div class="auth-logo-icon"><i class="ti ti-brain"></i></div>
+        <span class="auth-logo-name">Psique</span>
+      </div>
+      <div class="auth-subtitle">Foro académico · 4to trimestre</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchAuthTab('login')">Iniciar sesión</div>
+        <div class="auth-tab" onclick="switchAuthTab('register')">Registrarse</div>
+      </div>
+      <div id="auth-login">
+        <div class="form-group">
+          <label class="form-label">Correo</label>
+          <input class="form-input" type="email" id="login-email" placeholder="tu@correo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input class="form-input" type="password" id="login-pass" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Entrar</button>
+        <div id="login-msg" class="auth-msg"></div>
+      </div>
+      <div id="auth-register" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Usuario</label>
+          <input class="form-input" type="text" id="reg-username" placeholder="tuusuario">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo</label>
+          <input class="form-input" type="email" id="reg-email" placeholder="tu@correo.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input class="form-input" type="password" id="reg-pass" placeholder="mínimo 6 caracteres">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Trimestre</label>
+          <select class="form-select" id="reg-trimestre">
+            <option value="1ro">1er trimestre</option>
+            <option value="2do">2do trimestre</option>
+            <option value="3ro">3er trimestre</option>
+            <option value="4to" selected>4to trimestre</option>
+            <option value="5to">5to trimestre</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="doRegister()">Crear cuenta</button>
+        <div id="reg-msg" class="auth-msg"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none;">
+
+<div class="topbar">
+  <a class="logo" href="#" onclick="navigate('debates')">
+    <div class="logo-icon"><i class="ti ti-brain"></i></div>
+    <span class="logo-name">Psique</span>
+    <span class="logo-badge">4to trim.</span>
+  </a>
+  <div class="topbar-nav">
+    <button class="tnav active" id="nav-debates" onclick="navigate('debates')"><i class="ti ti-messages"></i> Debates <span class="nbadge" id="debates-count">0</span></button>
+    <button class="tnav" id="nav-biblioteca" onclick="navigate('biblioteca')"><i class="ti ti-book"></i> Biblioteca</button>
+    <button class="tnav" id="nav-videoteca" onclick="navigate('videoteca')"><i class="ti ti-player-play"></i> Videoteca</button>
+    <button class="tnav" id="nav-wiki" onclick="navigate('wiki')"><i class="ti ti-notes"></i> Wiki</button>
+  </div>
+  <div class="topbar-right">
+    <button class="anon-toggle" id="anon-toggle" onclick="toggleAnon()">
+      <i class="ti ti-ghost"></i>
+      <span id="anon-label">modo anónimo</span>
+    </button>
+    <button class="user-btn" id="user-initials" onclick="doLogout()"></button>
+  </div>
+</div>
+
+<!-- DEBATES PAGE -->
+<div id="page-debates" class="page active">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <div class="compose-box" onclick="openNewThread()">
+          <div class="compose-inner" id="compose-inner">
+            <div class="compose-av" id="compose-av"></div>
+            <div class="compose-placeholder">¿Qué quieres debatir hoy? Escribe un hilo o publica como fantasma...</div>
+          </div>
+          <div class="compose-chips">
+            <div class="chip"><i class="ti ti-tag"></i> tema</div>
+            <div class="chip"><i class="ti ti-link"></i> fuente</div>
+            <div class="chip"><i class="ti ti-poll"></i> encuesta</div>
+            <div class="chip"><i class="ti ti-ghost"></i> anónimo</div>
+          </div>
+        </div>
+        <div class="filters" id="category-filters">
+          <div class="ftag active" onclick="filterCategory(null, this)">Todos</div>
+        </div>
+        <div id="threads-list"><div class="loading"><i class="ti ti-loader"></i>Cargando debates...</div></div>
+      </div>
+      <div>
+        <div class="sw hot">
+          <div class="sw-label"><i class="ti ti-flame"></i> En llamas ahora</div>
+          <div id="hot-threads"><div class="sw-item"><i class="ti ti-loader"></i> cargando...</div></div>
+        </div>
+        <div class="sw members">
+          <div class="sw-label" style="color:var(--teal-600)"><i class="ti ti-circles"></i> Miembros del foro</div>
+          <div id="members-list" class="member-avatars"></div>
+        </div>
+        <div class="sw wiki-sw">
+          <div class="sw-label"><i class="ti ti-sparkles"></i> Wiki reciente · IA</div>
+          <div id="wiki-preview"><div class="sw-item"><i class="ti ti-loader"></i> cargando...</div></div>
+        </div>
+        <div class="sw" style="background:var(--bg);border:0.5px solid var(--border);">
+          <div class="sw-label" style="color:var(--text2)"><i class="ti ti-chart-bar"></i> Actividad reciente</div>
+          <div id="activity-feed"><div class="sw-item" style="color:var(--text3)"><i class="ti ti-loader" style="color:var(--text3)"></i> cargando...</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THREAD DETAIL PAGE -->
+<div id="page-thread" class="page">
+  <div class="container" style="max-width:800px">
+    <div id="thread-detail-content"></div>
+  </div>
+</div>
+
+<!-- BIBLIOTECA PAGE -->
+<div id="page-biblioteca" class="page">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">Biblioteca virtual</div>
+      <button class="btn btn-primary btn-sm" onclick="openAddLibrary()"><i class="ti ti-plus"></i> Agregar recurso</button>
+    </div>
+    <div class="filters">
+      <div class="ftag active" onclick="filterLib(null,this)">Todo</div>
+      <div class="ftag" onclick="filterLib('Neurobiología',this)">Neurobiología</div>
+      <div class="ftag" onclick="filterLib('Psicoanálisis',this)">Psicoanálisis</div>
+      <div class="ftag" onclick="filterLib('Cognición',this)">Cognición</div>
+      <div class="ftag" onclick="filterLib('Desarrollo',this)">Desarrollo</div>
+      <div class="ftag" onclick="filterLib('Teoría',this)">Teoría</div>
+    </div>
+    <div id="library-grid" class="lib-grid"><div class="loading"><i class="ti ti-loader"></i>Cargando biblioteca...</div></div>
+  </div>
+</div>
+
+<!-- VIDEOTECA PAGE -->
+<div id="page-videoteca" class="page">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">Videoteca</div>
+      <button class="btn btn-primary btn-sm" onclick="openAddVideo()"><i class="ti ti-plus"></i> Agregar video</button>
+    </div>
+    <div id="video-grid" class="vid-grid"><div class="loading"><i class="ti ti-loader"></i>Cargando videos...</div></div>
+  </div>
+</div>
+
+<!-- VIDEO PLAYER PAGE -->
+<div id="page-video-player" class="page">
+  <div class="container" style="max-width:800px">
+    <button class="back-btn" onclick="navigate('videoteca')" style="color:var(--text2);margin-bottom:12px;"><i class="ti ti-arrow-left"></i> Volver</button>
+    <div id="video-player-content"></div>
+  </div>
+</div>
+
+<!-- WIKI PAGE -->
+<div id="page-wiki" class="page">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-title">Wiki de clases</div>
+      <button class="btn btn-primary btn-sm" onclick="openNewWikiPage()"><i class="ti ti-plus"></i> Nueva clase</button>
+    </div>
+    <div id="wiki-list"><div class="loading"><i class="ti ti-loader"></i>Cargando wiki...</div></div>
+  </div>
+</div>
+
+<!-- WIKI DETAIL PAGE -->
+<div id="page-wiki-detail" class="page">
+  <div class="container" style="max-width:800px">
+    <div id="wiki-detail-content"></div>
+  </div>
+</div>
+
+</div><!-- /main-app -->
+
+<!-- MODALS -->
+
+<!-- NEW THREAD MODAL -->
+<div class="modal-overlay" id="modal-thread">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Nuevo debate</h2>
+      <button class="modal-close" onclick="closeModal('modal-thread')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Título del hilo</label>
+        <input class="form-input" id="nt-title" placeholder="Una pregunta que provoque debate...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contenido</label>
+        <textarea class="form-input form-textarea" id="nt-body" placeholder="Desarrolla tu argumento, cita fuentes, plantea la pregunta..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categoría</label>
+        <select class="form-select" id="nt-category"></select>
+      </div>
+      <div class="form-footer">
+        <label class="anon-check">
+          <input type="checkbox" id="nt-anon"> Publicar anónimamente
+        </label>
+        <button class="btn btn-primary" onclick="submitThread()">Publicar hilo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD LIBRARY MODAL -->
+<div class="modal-overlay" id="modal-library">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Agregar a biblioteca</h2>
+      <button class="modal-close" onclick="closeModal('modal-library')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Título del libro / artículo</label>
+        <input class="form-input" id="lib-title" placeholder="Ej: El error de Descartes — Antonio Damasio">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Autor</label>
+        <input class="form-input" id="lib-author" placeholder="Autor o autores">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Reseña breve (opcional)</label>
+        <textarea class="form-input form-textarea" id="lib-desc" placeholder="¿Por qué lo recomiendas? ¿Qué aporta al curso?" style="min-height:70px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">URL del PDF / recurso</label>
+        <input class="form-input" id="lib-url" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categoría</label>
+        <select class="form-select" id="lib-cat">
+          <option>Neurobiología</option><option>Psicoanálisis</option>
+          <option>Cognición</option><option>Desarrollo</option>
+          <option>Teoría</option><option>Clínica</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="form-footer">
+        <label class="anon-check"><input type="checkbox" id="lib-anon"> Subir anónimamente</label>
+        <button class="btn btn-primary" onclick="submitLibrary()">Agregar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD VIDEO MODAL -->
+<div class="modal-overlay" id="modal-video">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Agregar video</h2>
+      <button class="modal-close" onclick="closeModal('modal-video')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">URL de YouTube</label>
+        <input class="form-input" id="vid-url" placeholder="https://www.youtube.com/watch?v=...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Título</label>
+        <input class="form-input" id="vid-title" placeholder="Nombre del video o conferencia">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descripción (opcional)</label>
+        <textarea class="form-input form-textarea" id="vid-desc" placeholder="¿Por qué es relevante para el curso?" style="min-height:70px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categoría</label>
+        <select class="form-select" id="vid-cat">
+          <option>Neurobiología</option><option>Psicoanálisis</option>
+          <option>Cognición</option><option>Desarrollo</option>
+          <option>Conferencia</option><option>Documental</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="form-footer">
+        <label class="anon-check"><input type="checkbox" id="vid-anon"> Agregar anónimamente</label>
+        <button class="btn btn-primary" onclick="submitVideo()">Agregar video</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW WIKI PAGE MODAL -->
+<div class="modal-overlay" id="modal-wiki-new">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Nueva página wiki</h2>
+      <button class="modal-close" onclick="closeModal('modal-wiki-new')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nombre de la clase</label>
+        <input class="form-input" id="wiki-name" placeholder="Ej: Procesos atencionales y psicopatología">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Número de clase</label>
+        <input class="form-input" type="number" id="wiki-num" placeholder="Ej: 8">
+      </div>
+      <div class="form-footer">
+        <span></span>
+        <button class="btn btn-primary" onclick="submitWikiPage()">Crear página</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg"></span></div>
+
+<script>
+const SUPABASE_URL = 'https://nfzbsogsovhxljbzakbs.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_lv-K2d-7Xe6pNg82XUt1mQ_n6P8ZLhA';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentProfile = null;
+let isAnon = false;
+let activeCategory = null;
+let categories = [];
+
+// =============================================
+// INIT
+// =============================================
+async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadProfile();
+    showApp();
+  } else {
+    showAuth();
+  }
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN') {
+      currentUser = session.user;
+      await loadProfile();
+      showApp();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null; currentProfile = null;
+      showAuth();
+    }
+  });
+}
+
+async function loadProfile() {
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  currentProfile = data;
+  if (data) {
+    document.getElementById('user-initials').textContent = data.avatar_initials || data.username?.slice(0,2).toUpperCase();
+    document.getElementById('compose-av').textContent = data.avatar_initials || data.username?.slice(0,2).toUpperCase();
+  }
+}
+
+function showApp() {
+  document.getElementById('auth-page').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  loadCategories();
+  loadDebates();
+  loadSidebar();
+}
+
+function showAuth() {
+  document.getElementById('auth-page').style.display = 'flex';
+  document.getElementById('main-app').style.display = 'none';
+}
+
+// =============================================
+// AUTH
+// =============================================
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+  const msg = document.getElementById('login-msg');
+  msg.textContent = 'Iniciando sesión...';
+  msg.className = 'auth-msg';
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
+}
+
+async function doRegister() {
+  const username = document.getElementById('reg-username').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  const trimestre = document.getElementById('reg-trimestre').value;
+  const msg = document.getElementById('reg-msg');
+  if (!username || !email || !pass) { msg.textContent = 'Completa todos los campos'; msg.className = 'auth-msg error'; return; }
+  msg.textContent = 'Creando cuenta...'; msg.className = 'auth-msg';
+  const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { username, trimestre } } });
+  if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
+  else { msg.textContent = 'Revisa tu correo para confirmar la cuenta'; msg.className = 'auth-msg success'; }
+}
+
+async function doLogout() {
+  if (!confirm('¿Cerrar sesión?')) return;
+  await sb.auth.signOut();
+}
+
+// =============================================
+// NAVIGATION
+// =============================================
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tnav').forEach(n => n.classList.remove('active'));
+  const pageMap = { debates: 'page-debates', biblioteca: 'page-biblioteca', videoteca: 'page-videoteca', wiki: 'page-wiki', thread: 'page-thread', 'video-player': 'page-video-player', 'wiki-detail': 'page-wiki-detail' };
+  const navMap = { debates: 'nav-debates', biblioteca: 'nav-biblioteca', videoteca: 'nav-videoteca', wiki: 'nav-wiki' };
+  if (pageMap[page]) document.getElementById(pageMap[page]).classList.add('active');
+  if (navMap[page]) document.getElementById(navMap[page]).classList.add('active');
+  if (page === 'biblioteca') loadLibrary();
+  if (page === 'videoteca') loadVideos();
+  if (page === 'wiki') loadWiki();
+}
+
+// =============================================
+// ANON TOGGLE
+// =============================================
+function toggleAnon() {
+  isAnon = !isAnon;
+  const btn = document.getElementById('anon-toggle');
+  const lbl = document.getElementById('anon-label');
+  const av = document.getElementById('compose-av');
+  const ci = document.getElementById('compose-inner');
+  if (isAnon) { btn.classList.add('on'); lbl.textContent = 'anónimo activo'; av.innerHTML = '<i class="ti ti-ghost" style="font-size:14px"></i>'; ci.classList.add('anon-mode'); }
+  else { btn.classList.remove('on'); lbl.textContent = 'modo anónimo'; av.textContent = currentProfile?.avatar_initials || ''; ci.classList.remove('anon-mode'); }
+}
+
+// =============================================
+// CATEGORIES
+// =============================================
+async function loadCategories() {
+  const { data } = await sb.from('categories').select('*').order('id');
+  categories = data || [];
+  const filters = document.getElementById('category-filters');
+  filters.innerHTML = '<div class="ftag active" onclick="filterCategory(null,this)">Todos</div>';
+  const sel = document.getElementById('nt-category');
+  sel.innerHTML = '';
+  categories.forEach(c => {
+    filters.innerHTML += `<div class="ftag" onclick="filterCategory(${c.id},this)">${c.name}</div>`;
+    sel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+  });
+}
+
+function filterCategory(id, el) {
+  document.querySelectorAll('#category-filters .ftag').forEach(f => f.classList.remove('active'));
+  el.classList.add('active');
+  activeCategory = id;
+  loadDebates();
+}
+
+// =============================================
+// DEBATES
+// =============================================
+async function loadDebates() {
+  const list = document.getElementById('threads-list');
+  list.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando debates...</div>';
+  let q = sb.from('threads').select('*, profiles(username,avatar_initials,avatar_color), categories(name,color,text_color)').order('created_at', { ascending: false });
+  if (activeCategory) q = q.eq('category_id', activeCategory);
+  const { data, error } = await q;
+  if (error || !data?.length) { list.innerHTML = '<div class="empty"><i class="ti ti-messages"></i><p>No hay hilos aún. ¡Sé el primero en debatir!</p></div>'; return; }
+  document.getElementById('debates-count').textContent = data.length;
+  list.innerHTML = data.map(t => threadCard(t)).join('');
+}
+
+function threadCard(t) {
+  const cat = t.categories;
+  const who = t.is_anonymous ? '<span class="anon-pill"><i class="ti ti-ghost" style="font-size:10px"></i> anónimo</span>' : `<span>${t.profiles?.username || 'usuario'}</span>`;
+  const av = t.is_anonymous ? '<i class="ti ti-ghost" style="font-size:15px"></i>' : (t.profiles?.avatar_initials || '??');
+  const avStyle = t.is_anonymous ? 'class="tc-av anon"' : `class="tc-av" style="background:var(--purple-50);color:var(--purple-600)"`;
+  const pillStyle = cat ? `background:${cat.color};color:${cat.text_color}` : 'background:var(--purple-50);color:var(--purple-600)';
+  const preview = t.body.length > 180 ? t.body.slice(0, 180) + '...' : t.body;
+  return `<div class="thread-card" onclick="openThread('${t.id}')">
+    <div class="tc-body">
+      <div ${avStyle}>${av}</div>
+      <div style="flex:1">
+        <div class="tc-meta">${who} · <span>${timeAgo(t.created_at)}</span></div>
+        <div class="tc-title">${t.title}</div>
+        <div class="tc-preview">${preview}</div>
+      </div>
+    </div>
+    <div class="tc-footer">
+      <div class="tc-stat"><i class="ti ti-message"></i> <span id="rc-${t.id}">...</span></div>
+      <button class="like-btn" onclick="event.stopPropagation();likeItem('${t.id}','thread',this)"><i class="ti ti-heart"></i> ${t.likes}</button>
+      <div class="tc-stat"><i class="ti ti-clock"></i> ${timeAgo(t.created_at)}</div>
+      ${cat ? `<span class="topic-pill" style="${pillStyle}">${cat.name}</span>` : ''}
+    </div>
+  </div>`;
+}
+
+async function openThread(id) {
+  navigate('thread');
+  const content = document.getElementById('thread-detail-content');
+  content.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+  const [{ data: t }, { data: replies }] = await Promise.all([
+    sb.from('threads').select('*, profiles(username,avatar_initials), categories(name,color,text_color)').eq('id', id).single(),
+    sb.from('replies').select('*, profiles(username,avatar_initials)').eq('thread_id', id).order('created_at')
+  ]);
+  if (!t) { content.innerHTML = '<div class="empty"><i class="ti ti-alert-circle"></i><p>Hilo no encontrado</p></div>'; return; }
+  const cat = t.categories;
+  const pillStyle = cat ? `background:${cat.color};color:${cat.text_color}` : '';
+  const whoT = t.is_anonymous ? '<span class="anon-pill"><i class="ti ti-ghost" style="font-size:10px"></i> anónimo</span>' : `<strong>${t.profiles?.username}</strong>`;
+  content.innerHTML = `
+    <div class="card" style="margin-bottom:16px">
+      <div class="thread-detail-header">
+        <button class="back-btn" onclick="navigate('debates')"><i class="ti ti-arrow-left"></i> Volver a debates</button>
+        <div class="thread-detail-title">${t.title}</div>
+        <div class="thread-detail-meta">
+          <span>${whoT}</span>
+          <span>·</span>
+          <span>${timeAgo(t.created_at)}</span>
+          ${cat ? `<span class="topic-pill" style="${pillStyle};font-size:11px">${cat.name}</span>` : ''}
+        </div>
+      </div>
+      <div class="card-body" style="font-size:14px;line-height:1.75;color:var(--text)">${t.body.replace(/\n/g,'<br>')}</div>
+      <div style="padding:8px 16px;border-top:0.5px solid var(--border);display:flex;gap:12px;background:var(--bg2)">
+        <button class="like-btn" onclick="likeItem('${t.id}','thread',this)"><i class="ti ti-heart"></i> ${t.likes} me gusta</button>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:10px">${replies?.length || 0} respuestas</div>
+    <div id="replies-list">${(replies||[]).map(r => replyCard(r)).join('')}</div>
+    <div class="reply-compose">
+      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">Tu respuesta</div>
+      <textarea class="form-input form-textarea" id="reply-body" placeholder="Argumenta con evidencia, cita autores, comparte tu perspectiva..." style="min-height:80px;margin-bottom:10px"></textarea>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <label class="anon-check"><input type="checkbox" id="reply-anon" ${isAnon?'checked':''}> Responder anónimamente</label>
+        <button class="btn btn-primary btn-sm" onclick="submitReply('${t.id}')">Responder</button>
+      </div>
+    </div>`;
+}
+
+function replyCard(r) {
+  const av = r.is_anonymous ? '<i class="ti ti-ghost" style="font-size:14px"></i>' : (r.profiles?.avatar_initials || '??');
+  const avCls = r.is_anonymous ? 'tc-av anon' : 'tc-av';
+  const who = r.is_anonymous ? '<span class="anon-pill">anónimo</span>' : `<strong>${r.profiles?.username}</strong>`;
+  return `<div class="reply-card">
+    <div class="${avCls}" style="${r.is_anonymous?'':'background:var(--teal-50);color:var(--teal-600)'}">${av}</div>
+    <div style="flex:1">
+      <div class="reply-meta">${who} · ${timeAgo(r.created_at)}</div>
+      <div class="reply-body">${r.body.replace(/\n/g,'<br>')}</div>
+      <div style="margin-top:6px">
+        <button class="like-btn" onclick="likeItem('${r.id}','reply',this)"><i class="ti ti-heart"></i> ${r.likes}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function submitReply(threadId) {
+  const body = document.getElementById('reply-body').value.trim();
+  const anon = document.getElementById('reply-anon').checked;
+  if (!body) { showToast('Escribe algo antes de responder', 'error'); return; }
+  const { error } = await sb.from('replies').insert({ thread_id: threadId, author_id: currentUser.id, body, is_anonymous: anon });
+  if (error) { showToast('Error al enviar respuesta', 'error'); return; }
+  showToast('Respuesta publicada');
+  openThread(threadId);
+}
+
+// =============================================
+// NEW THREAD
+// =============================================
+function openNewThread() {
+  document.getElementById('nt-anon').checked = isAnon;
+  document.getElementById('modal-thread').classList.add('open');
+}
+
+async function submitThread() {
+  const title = document.getElementById('nt-title').value.trim();
+  const body = document.getElementById('nt-body').value.trim();
+  const cat = document.getElementById('nt-category').value;
+  const anon = document.getElementById('nt-anon').checked;
+  if (!title || !body) { showToast('Título y contenido son obligatorios', 'error'); return; }
+  const { error } = await sb.from('threads').insert({ title, body, category_id: parseInt(cat), author_id: currentUser.id, is_anonymous: anon });
+  if (error) { showToast('Error al publicar', 'error'); return; }
+  closeModal('modal-thread');
+  document.getElementById('nt-title').value = '';
+  document.getElementById('nt-body').value = '';
+  showToast('Hilo publicado');
+  loadDebates();
+  loadSidebar();
+}
+
+// =============================================
+// LIKES
+// =============================================
+async function likeItem(id, type, btn) {
+  const { error } = await sb.from('likes').insert({ user_id: currentUser.id, target_id: id, target_type: type });
+  if (error) return;
+  await sb.from(type === 'thread' ? 'threads' : 'replies').update({ likes: (parseInt(btn.textContent.match(/\d+/)?.[0]||0)+1) }).eq('id', id);
+  btn.classList.add('liked');
+  const num = parseInt(btn.textContent.match(/\d+/)?.[0]||0)+1;
+  btn.innerHTML = `<i class="ti ti-heart"></i> ${num}`;
+}
+
+// =============================================
+// SIDEBAR
+// =============================================
+async function loadSidebar() {
+  // Hot threads
+  const { data: hot } = await sb.from('threads').select('id,title,likes').order('likes', { ascending: false }).limit(3);
+  const hotEl = document.getElementById('hot-threads');
+  if (hot?.length) hotEl.innerHTML = hot.map(t => `<div class="sw-item" onclick="openThread('${t.id}')" style="cursor:pointer"><i class="ti ti-arrow-up-right"></i>${t.title.slice(0,50)}${t.title.length>50?'...':''}</div>`).join('');
+  else hotEl.innerHTML = '<div class="sw-item"><i class="ti ti-zzz" style="color:var(--coral-400)"></i>Sin actividad aún</div>';
+
+  // Members
+  const { data: members } = await sb.from('profiles').select('username,avatar_initials,avatar_color').limit(8);
+  const colors = ['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B','#FAECE7:#993C1D','#E6F1FB:#185FA5'];
+  const membersEl = document.getElementById('members-list');
+  if (members?.length) membersEl.innerHTML = members.map((m,i) => { const [bg,c]=colors[i%colors.length].split(':'); return `<div class="mav" style="background:${bg};color:${c}" title="${m.username}">${m.avatar_initials||'??'}</div>`; }).join('') + `<span style="font-size:11px;color:var(--teal-600);margin-left:4px">${members.length} miembros</span>`;
+  else membersEl.innerHTML = '<span style="font-size:12px;color:var(--text3)">Sin miembros aún</span>';
+
+  // Wiki preview
+  const { data: wikis } = await sb.from('wiki_pages').select('id,class_name,class_number').order('class_number', { ascending: false }).limit(3);
+  const wikiEl = document.getElementById('wiki-preview');
+  if (wikis?.length) wikiEl.innerHTML = wikis.map(w => `<div class="sw-item" onclick="openWikiDetail('${w.id}')" style="cursor:pointer"><i class="ti ti-file-description"></i>Clase ${w.class_number||''} — ${w.class_name.slice(0,35)}${w.class_name.length>35?'...':''}</div>`).join('');
+  else wikiEl.innerHTML = '<div class="sw-item"><i class="ti ti-sparkles"></i>Sin páginas wiki aún</div>';
+
+  // Activity
+  const { data: threads } = await sb.from('threads').select('title,created_at,is_anonymous,profiles(username)').order('created_at', { ascending: false }).limit(3);
+  const { data: libItems } = await sb.from('library').select('title,created_at').order('created_at', { ascending: false }).limit(2);
+  const actEl = document.getElementById('activity-feed');
+  let acts = [];
+  (threads||[]).forEach(t => acts.push({ time: t.created_at, text: `${t.is_anonymous?'Anónimo':t.profiles?.username||'Alguien'} publicó un hilo`, color: '#D85A30' }));
+  (libItems||[]).forEach(l => acts.push({ time: l.created_at, text: `Nuevo recurso: ${l.title?.slice(0,30)}`, color: '#1D9E75' }));
+  acts.sort((a,b) => new Date(b.time)-new Date(a.time));
+  actEl.innerHTML = acts.slice(0,5).map(a => `<div class="sw-item"><div class="act-dot" style="background:${a.color};flex-shrink:0"></div>${a.text}</div>`).join('') || '<div class="sw-item" style="color:var(--text3)"><i class="ti ti-zzz"></i>Sin actividad aún</div>';
+}
+
+// =============================================
+// BIBLIOTECA
+// =============================================
+let libCatFilter = null;
+function filterLib(cat, el) {
+  document.querySelectorAll('#page-biblioteca .ftag').forEach(f => f.classList.remove('active'));
+  el.classList.add('active'); libCatFilter = cat; loadLibrary();
+}
+
+async function loadLibrary() {
+  const grid = document.getElementById('library-grid');
+  grid.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+  let q = sb.from('library').select('*, profiles(username)').order('created_at', { ascending: false });
+  if (libCatFilter) q = q.eq('category', libCatFilter);
+  const { data } = await q;
+  if (!data?.length) { grid.innerHTML = '<div class="empty"><i class="ti ti-book"></i><p>La biblioteca está vacía. ¡Sube el primer recurso!</p></div>'; return; }
+  grid.innerHTML = data.map(item => `
+    <div class="lib-card" onclick="${item.file_url?`window.open('${item.file_url}','_blank')`:''}">
+      <div class="lib-cover"><i class="ti ti-file-type-pdf"></i></div>
+      <div class="lib-info">
+        <div class="lib-title">${item.title}</div>
+        ${item.author ? `<div class="lib-author">${item.author}</div>` : ''}
+        ${item.description ? `<div class="lib-desc">${item.description}</div>` : ''}
+      </div>
+      <div class="lib-footer">
+        <span class="lib-cat">${item.category||'General'}</span>
+        <button class="like-btn" onclick="event.stopPropagation();likeItem('${item.id}','library',this)"><i class="ti ti-heart"></i> ${item.likes}</button>
+        ${item.file_url ? '<span style="font-size:11px;color:var(--purple-600);margin-left:auto;display:flex;align-items:center;gap:3px"><i class="ti ti-download" style="font-size:13px"></i>Abrir PDF</span>' : ''}
+      </div>
+    </div>`).join('');
+}
+
+function openAddLibrary() { document.getElementById('modal-library').classList.add('open'); }
+
+async function submitLibrary() {
+  const title = document.getElementById('lib-title').value.trim();
+  const author = document.getElementById('lib-author').value.trim();
+  const description = document.getElementById('lib-desc').value.trim();
+  const file_url = document.getElementById('lib-url').value.trim();
+  const category = document.getElementById('lib-cat').value;
+  const anon = document.getElementById('lib-anon').checked;
+  if (!title) { showToast('El título es obligatorio', 'error'); return; }
+  const { error } = await sb.from('library').insert({ title, author, description, file_url, category, uploaded_by: currentUser.id, is_anonymous: anon });
+  if (error) { showToast('Error al guardar', 'error'); return; }
+  closeModal('modal-library');
+  document.getElementById('lib-title').value = ''; document.getElementById('lib-author').value = '';
+  document.getElementById('lib-desc').value = ''; document.getElementById('lib-url').value = '';
+  showToast('Recurso agregado a la biblioteca');
+  loadLibrary();
+}
+
+// =============================================
+// VIDEOTECA
+// =============================================
+function getYoutubeId(url) {
+  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  return m ? m[1] : null;
+}
+
+async function loadVideos() {
+  const grid = document.getElementById('video-grid');
+  grid.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando videos...</div>';
+  const { data } = await sb.from('videos').select('*').order('created_at', { ascending: false });
+  if (!data?.length) { grid.innerHTML = '<div class="empty"><i class="ti ti-player-play"></i><p>La videoteca está vacía. ¡Agrega el primer video!</p></div>'; return; }
+  grid.innerHTML = data.map(v => `
+    <div class="vid-card" onclick="playVideo('${v.id}')">
+      <div class="vid-thumb">
+        <img src="https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg" alt="${v.title}" loading="lazy">
+        <div class="vid-play"><i class="ti ti-player-play"></i></div>
+      </div>
+      <div class="vid-info">
+        <div class="vid-title">${v.title}</div>
+        ${v.description ? `<div class="vid-desc">${v.description.slice(0,100)}${v.description.length>100?'...':''}</div>` : ''}
+        <div style="margin-top:6px;display:flex;align-items:center;gap:8px">
+          <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--pink-50);color:var(--pink-600)">${v.category||'General'}</span>
+          <button class="like-btn" onclick="event.stopPropagation();likeItem('${v.id}','video',this)"><i class="ti ti-heart"></i> ${v.likes}</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function playVideo(id) {
+  navigate('video-player');
+  const { data: v } = await sb.from('videos').select('*').eq('id', id).single();
+  if (!v) return;
+  document.getElementById('video-player-content').innerHTML = `
+    <div class="vid-embed" style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px">
+      <iframe src="https://www.youtube.com/embed/${v.youtube_id}?autoplay=1" allowfullscreen allow="autoplay"></iframe>
+    </div>
+    <h2 style="font-size:20px;font-family:var(--font-serif);color:var(--text);margin-bottom:6px">${v.title}</h2>
+    ${v.description ? `<p style="font-size:13px;color:var(--text2);line-height:1.65;margin-top:8px">${v.description}</p>` : ''}
+    <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:11px;padding:3px 9px;border-radius:20px;background:var(--pink-50);color:var(--pink-600)">${v.category||'General'}</span>
+      <button class="like-btn" onclick="likeItem('${v.id}','video',this)"><i class="ti ti-heart"></i> ${v.likes} me gusta</button>
+    </div>`;
+}
+
+function openAddVideo() { document.getElementById('modal-video').classList.add('open'); }
+
+async function submitVideo() {
+  const url = document.getElementById('vid-url').value.trim();
+  const title = document.getElementById('vid-title').value.trim();
+  const description = document.getElementById('vid-desc').value.trim();
+  const category = document.getElementById('vid-cat').value;
+  const anon = document.getElementById('vid-anon').checked;
+  const youtube_id = getYoutubeId(url);
+  if (!url || !title) { showToast('URL y título son obligatorios', 'error'); return; }
+  if (!youtube_id) { showToast('URL de YouTube no válida', 'error'); return; }
+  const { error } = await sb.from('videos').insert({ title, youtube_url: url, youtube_id, description, category, added_by: currentUser.id, is_anonymous: anon });
+  if (error) { showToast('Error al guardar', 'error'); return; }
+  closeModal('modal-video');
+  document.getElementById('vid-url').value = ''; document.getElementById('vid-title').value = '';
+  document.getElementById('vid-desc').value = '';
+  showToast('Video agregado a la videoteca');
+  loadVideos();
+}
+
+// =============================================
+// WIKI
+// =============================================
+async function loadWiki() {
+  const list = document.getElementById('wiki-list');
+  list.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando wiki...</div>';
+  const { data: pages } = await sb.from('wiki_pages').select('*').order('class_number', { ascending: false });
+  if (!pages?.length) { list.innerHTML = '<div class="empty"><i class="ti ti-notes"></i><p>No hay páginas wiki aún. ¡Crea la primera!</p></div>'; return; }
+  const contribCounts = await Promise.all(pages.map(p => sb.from('wiki_contributions').select('id,profiles(username,avatar_initials)', { count: 'exact' }).eq('wiki_page_id', p.id)));
+  list.innerHTML = pages.map((p, i) => {
+    const contribs = contribCounts[i].data || [];
+    const count = contribCounts[i].count || 0;
+    const avatars = contribs.slice(0,4).map((c,j) => {
+      const colors = ['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B'];
+      const [bg,c2] = colors[j%4].split(':');
+      return `<div class="cav" style="background:${bg};color:${c2}">${c.profiles?.avatar_initials||'??'}</div>`;
+    }).join('');
+    return `<div class="wiki-page-card" onclick="openWikiDetail('${p.id}')">
+      <div class="wpc-header">
+        <div>
+          <div class="wpc-title">Clase ${p.class_number||''} — ${p.class_name}</div>
+          <div class="wpc-meta">${count} aporte${count!==1?'s':''} · ${timeAgo(p.created_at)}</div>
+        </div>
+        <div class="ai-badge"><i class="ti ti-sparkles"></i>${p.ai_summary ? 'Sintetizado' : 'Sin síntesis'}</div>
+      </div>
+      ${p.ai_summary ? `<div class="wpc-summary">${p.ai_summary.slice(0,200)}${p.ai_summary.length>200?'...':''}</div>` : ''}
+      ${avatars ? `<div class="contrib-avatars">${avatars}<span class="contrib-text">${count} contribución${count!==1?'es':''}</span></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function openWikiDetail(id) {
+  navigate('wiki-detail');
+  const content = document.getElementById('wiki-detail-content');
+  content.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+  const [{ data: page }, { data: contribs }] = await Promise.all([
+    sb.from('wiki_pages').select('*').eq('id', id).single(),
+    sb.from('wiki_contributions').select('*, profiles(username,avatar_initials)').eq('wiki_page_id', id).order('created_at', { ascending: false })
+  ]);
+  if (!page) return;
+  content.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <button class="back-btn" onclick="navigate('wiki')" style="color:var(--text2)"><i class="ti ti-arrow-left"></i> Wiki</button>
+      <div class="ai-badge"><i class="ti ti-sparkles"></i> IA activa</div>
+    </div>
+    <h1 style="font-family:var(--font-serif);font-size:28px;color:var(--text);margin-bottom:4px;line-height:1.2">Clase ${page.class_number||''}</h1>
+    <h2 style="font-size:18px;color:var(--text2);font-weight:400;margin-bottom:20px">${page.class_name}</h2>
+    ${page.ai_summary ? `<div class="ai-summary-box">
+      <div class="ai-summary-label"><i class="ti ti-sparkles"></i> Síntesis generada por IA</div>
+      <div class="ai-summary-text">${page.ai_summary}</div>
+    </div>` : `<div class="ai-summary-box" style="border-color:var(--border);border-width:0.5px">
+      <div class="ai-summary-label" style="color:var(--text3)"><i class="ti ti-sparkles"></i> Síntesis pendiente</div>
+      <div style="font-size:13px;color:var(--text3)">Agrega aportes y genera la síntesis con IA.</div>
+    </div>`}
+    <div class="wiki-contrib-box">
+      <div class="wiki-contrib-label"><i class="ti ti-edit"></i> Agregar mis apuntes de esta clase</div>
+      <textarea class="form-input form-textarea" id="contrib-body" placeholder="Escribe lo que viste en clase, conceptos clave, definiciones, teorías mencionadas..." style="min-height:90px"></textarea>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <label class="anon-check"><input type="checkbox" id="contrib-anon" ${isAnon?'checked':''}> Aportar anónimamente</label>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-secondary btn-sm" onclick="synthesizeWiki('${id}')"><i class="ti ti-sparkles"></i> Sintetizar con IA</button>
+          <button class="btn btn-primary btn-sm" onclick="submitContrib('${id}')">Publicar aporte</button>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:500;color:var(--text2);margin:16px 0 10px">${contribs?.length||0} aportes de compañeros</div>
+    <div class="contrib-list">${(contribs||[]).map(c => {
+      const who = c.is_anonymous ? 'Anónimo' : (c.profiles?.username||'Usuario');
+      return `<div class="contrib-item">
+        <div class="contrib-item-meta">${who} · ${timeAgo(c.created_at)}</div>
+        <div class="contrib-item-body">${c.content.replace(/\n/g,'<br>')}</div>
+      </div>`;
+    }).join('')||'<div class="empty" style="padding:20px"><i class="ti ti-pencil"></i><p>Sé el primero en aportar apuntes</p></div>'}</div>`;
+}
+
+async function submitContrib(wikiId) {
+  const content = document.getElementById('contrib-body').value.trim();
+  const anon = document.getElementById('contrib-anon').checked;
+  if (!content) { showToast('Escribe tus apuntes antes de publicar', 'error'); return; }
+  const { error } = await sb.from('wiki_contributions').insert({ wiki_page_id: wikiId, author_id: currentUser.id, content, is_anonymous: anon });
+  if (error) { showToast('Error al publicar', 'error'); return; }
+  document.getElementById('contrib-body').value = '';
+  showToast('Aporte publicado');
+  openWikiDetail(wikiId);
+}
+
+async function synthesizeWiki(wikiId) {
+  showToast('Sintetizando con IA...');
+  const { data: contribs } = await sb.from('wiki_contributions').select('content').eq('wiki_page_id', wikiId);
+  if (!contribs?.length) { showToast('No hay aportes para sintetizar', 'error'); return; }
+  const allContent = contribs.map((c,i) => `Aporte ${i+1}: ${c.content}`).join('\n\n');
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': '', 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, messages: [{ role: 'user', content: `Eres un asistente académico. Los siguientes son apuntes de estudiantes de psicología sobre una clase. Genera un resumen coherente, estructurado y académico (máximo 300 palabras) que integre todos los aportes:\n\n${allContent}` }] })
+    });
+    const d = await resp.json();
+    const summary = d.content?.[0]?.text || '';
+    if (summary) {
+      await sb.from('wiki_pages').update({ ai_summary: summary, last_synthesized_at: new Date().toISOString() }).eq('id', wikiId);
+      showToast('Síntesis generada');
+      openWikiDetail(wikiId);
+    }
+  } catch(e) { showToast('Error con la IA', 'error'); }
+}
+
+function openNewWikiPage() { document.getElementById('modal-wiki-new').classList.add('open'); }
+
+async function submitWikiPage() {
+  const name = document.getElementById('wiki-name').value.trim();
+  const num = document.getElementById('wiki-num').value;
+  if (!name) { showToast('El nombre de la clase es obligatorio', 'error'); return; }
+  const { error } = await sb.from('wiki_pages').insert({ class_name: name, class_number: parseInt(num)||null });
+  if (error) { showToast('Error al crear', 'error'); return; }
+  closeModal('modal-wiki-new');
+  document.getElementById('wiki-name').value = ''; document.getElementById('wiki-num').value = '';
+  showToast('Página wiki creada');
+  loadWiki();
+}
+
+// =============================================
+// UTILS
+// =============================================
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = `toast ${type}`;
+  t.querySelector('i').className = type === 'error' ? 'ti ti-alert-circle' : 'ti ti-check';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function timeAgo(date) {
+  const diff = (Date.now() - new Date(date)) / 1000;
+  if (diff < 60) return 'ahora';
+  if (diff < 3600) return `hace ${Math.floor(diff/60)}min`;
+  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
+  if (diff < 604800) return `hace ${Math.floor(diff/86400)}d`;
+  return new Date(date).toLocaleDateString('es-MX', { day:'numeric', month:'short' });
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+init();
+</script>
+</body>
+</html>
