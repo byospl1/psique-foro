@@ -244,6 +244,32 @@ body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh
 .like-btn{background:none;border:none;font-size:11px;color:var(--tx3);cursor:pointer;display:flex;align-items:center;gap:3px;font-family:var(--f);padding:0;transition:color .15s}
 .like-btn:hover,.like-btn.liked{color:var(--pk400)}
 .like-btn i{font-size:14px}
+/* TRIM TAG PICKER */
+.trim-tag-picker{display:flex;flex-wrap:wrap;gap:5px}
+.trim-tag{font-size:11px;padding:4px 9px;border-radius:20px;border:0.5px solid var(--br2);color:var(--tx2);cursor:pointer;transition:all .12s;user-select:none}
+.trim-tag.sel{background:var(--p600);color:#fff;border-color:var(--p600)}
+.trim-chip{font-size:9px;padding:1px 6px;border-radius:20px;background:var(--b50);color:var(--b600);margin-right:3px;display:inline-block}
+/* VOTE WIDGET */
+.vote-box{display:flex;align-items:center;gap:6px;background:var(--bg2);border:0.5px solid var(--br);border-radius:20px;padding:2px 4px}
+.vote-btn{background:none;border:none;cursor:pointer;padding:3px 6px;border-radius:16px;display:flex;align-items:center;gap:3px;font-size:11px;font-family:var(--f);color:var(--tx3);transition:all .12s}
+.vote-btn:hover{background:var(--bg3)}
+.vote-btn.up.active{color:var(--t400);background:var(--t50)}
+.vote-btn.down.active{color:var(--c400);background:var(--c50)}
+.vote-btn i{font-size:14px}
+.vote-ratio{font-size:10px;color:var(--tx3);padding:0 4px}
+.danger-zone{color:var(--c400)!important}
+/* RESPECT BADGE */
+.respect-badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--a600);background:var(--a50);padding:2px 8px;border-radius:20px;border:0.5px solid var(--a400);font-weight:500}
+.respect-badge i{font-size:12px}
+/* PROFILE MODAL */
+.prof-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.prof-av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;flex-shrink:0}
+.prof-name{font-size:18px;font-weight:600;color:var(--tx)}
+.prof-meta{font-size:12px;color:var(--tx3);margin-top:2px}
+.prof-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+.prof-stat{background:var(--bg2);border:0.5px solid var(--br);border-radius:var(--r);padding:11px;text-align:center}
+.prof-stat-num{font-size:20px;font-weight:600;color:var(--p600)}
+.prof-stat-lbl{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -274,7 +300,7 @@ body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh
         <div class="fg"><label class="fl">Correo</label><input class="fi" type="email" id="re" placeholder="tu@correo.com"></div>
         <div class="fg"><label class="fl">Contraseña</label><input class="fi" type="password" id="rp" placeholder="mínimo 6 caracteres"></div>
         <div class="fg"><label class="fl">Trimestre</label>
-          <select class="fsel" id="rt"><option>1ro</option><option>2do</option><option>3ro</option><option value="4to" selected>4to</option><option>5to</option></select>
+          <select class="fsel" id="rt"><option value="1">1er trimestre</option><option value="2">2do trimestre</option><option value="3">3er trimestre</option><option value="4" selected>4to trimestre</option><option value="5">5to trimestre</option><option value="6">6to trimestre</option><option value="7">7mo trimestre</option><option value="8">8vo trimestre</option><option value="9">9no trimestre</option><option value="10">10mo trimestre</option><option value="11">11vo trimestre</option><option value="12">12vo trimestre</option><option value="13">13vo trimestre</option></select>
         </div>
         <button class="btn btn-p" style="width:100%" onclick="doReg()">Crear cuenta</button>
         <div id="rmsg" class="amsg"></div>
@@ -299,9 +325,12 @@ body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh
   </div>
   <div class="tr">
     <button class="anon-btn" id="anon-btn" onclick="toggleAnon()"><i class="ti ti-ghost"></i><span id="anon-lbl">anónimo</span></button>
-    <div class="uavatar" id="uavatar" onclick="toggleNotifs()">
-      <span id="uinit"></span>
+    <div class="uavatar" id="notifbell" onclick="toggleNotifs()" style="background:var(--p800);color:var(--p100)" title="Notificaciones">
+      <i class="ti ti-bell" style="font-size:15px"></i>
       <div class="notif-dot" id="ndot"></div>
+    </div>
+    <div class="uavatar" id="uavatar" onclick="openMyProfile()" title="Mi perfil">
+      <span id="uinit"></span>
     </div>
   </div>
 </div>
@@ -364,6 +393,10 @@ body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh
       <div class="ftag" onclick="filterLib('Cognición',this)">Cognición</div>
       <div class="ftag" onclick="filterLib('Desarrollo',this)">Desarrollo</div>
       <div class="ftag" onclick="filterLib('Teoría',this)">Teoría</div>
+    </div>
+    <div style="font-size:11px;color:var(--tx3);margin-bottom:6px">Filtrar por trimestre:</div>
+    <div class="filters" id="lib-trim-filters">
+      <div class="ftag active" onclick="filterLibTrim(null,this)">Todos</div>
     </div>
     <div id="lib-grid" class="lib-grid"><div class="loading"><i class="ti ti-loader"></i>Cargando...</div></div>
   </div>
@@ -428,6 +461,7 @@ body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh
         <div id="lib-url-wrap" style="display:none"><input class="fi" id="lu" placeholder="https://drive.google.com/..."></div>
       </div>
       <div class="fg"><label class="fl">Categoría</label><select class="fsel" id="lc"><option>Neurobiología</option><option>Psicoanálisis</option><option>Cognición</option><option>Desarrollo</option><option>Teoría</option><option>Clínica</option><option>Otro</option></select></div>
+      <div class="fg"><label class="fl">Etiquetas de trimestre (toca para seleccionar varias)</label><div id="lib-trim-tags" class="trim-tag-picker"></div></div>
       <div class="mfoot"><label class="ach"><input type="checkbox" id="la2"> Anónimo</label><button class="btn btn-p" onclick="submitLib()">Agregar</button></div>
     </div>
   </div>
@@ -457,12 +491,18 @@ body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh
   </div>
 </div>
 
+<div class="mo" id="mo-profile">
+  <div class="modal" style="max-width:420px">
+    <div class="mh"><h2>Perfil</h2><button class="mc-btn" onclick="closeM('mo-profile')"><i class="ti ti-x"></i></button></div>
+    <div class="mb" id="profile-body"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg"></span></div>
 
 <script>
 const SB_URL='https://nfzbsogsovhxljbzakbs.supabase.co';
 const SB_KEY='sb_publishable_lv-K2d-7Xe6pNg82XUt1mQ_n6P8ZLhA';
-const GEMINI_KEY='AQ.Ab8RN6KBovr_Ck1DqoxE9ahMbw0F6nKVaZKSdKmOxWROfPfTYA';
 const {createClient}=supabase;
 const sb=createClient(SB_URL,SB_KEY);
 
@@ -489,11 +529,14 @@ async function loadProfile(){
     document.getElementById('cav-compose').textContent=data.avatar_initials||'??';
   }
   await loadNotifs();
+  await loadMyVotes();
 }
 
 function isAdmin(){return ADMIN_EMAILS.includes(user?.email);}
 
-function showApp(){document.getElementById('auth-page').style.display='none';document.getElementById('app').style.display='block';loadCats();loadDebates();loadSidebar();subscribeRealtime();}
+function showApp(){document.getElementById('auth-page').style.display='none';document.getElementById('app').style.display='block';loadCats();loadDebates();loadSidebar();subscribeRealtime();
+  const tf=document.getElementById('lib-trim-filters');for(let i=1;i<=13;i++){tf.innerHTML+=`<div class="ftag" onclick="filterLibTrim(${i},this)">${TRIM_ORD[i]}</div>`;}
+}
 function showAuth(){document.getElementById('auth-page').style.display='flex';document.getElementById('app').style.display='none';}
 
 // ── REALTIME ──
@@ -527,10 +570,10 @@ function toggleNotifs(){
     `<div style="font-size:13px;color:var(--tx3);text-align:center;padding:8px">Sin notificaciones</div>`;
     if(!notifs.length)setTimeout(()=>p.classList.remove('show'),2000);
   }
-  if(!p.classList.contains('show'))doLogout_btn();
+  if(!p.classList.contains('show')){}
 }
 
-function doLogout_btn(){/* avatar click = notifs only */}
+function doLogout_btn(){}
 
 // ── AUTH ──
 function switchTab(t,el){document.querySelectorAll('.atab').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('tab-login').style.display=t==='login'?'block':'none';document.getElementById('tab-reg').style.display=t==='reg'?'block':'none';}
@@ -635,39 +678,52 @@ async function likeIt(id,type,btn){const{error}=await sb.from('likes').insert({u
 async function loadSidebar(){
   const[{data:hot},{data:members},{data:wikis},{data:thr},{data:lib}]=await Promise.all([
     sb.from('threads').select('id,title,likes').order('likes',{ascending:false}).limit(3),
-    sb.from('profiles').select('username,avatar_initials').limit(8),
+    sb.from('profiles').select('id,username,avatar_initials,respect').order('respect',{ascending:false}).limit(8),
     sb.from('wiki_pages').select('id,class_name,class_number').order('class_number',{ascending:false}).limit(3),
     sb.from('threads').select('title,created_at,is_anonymous,profiles(username)').order('created_at',{ascending:false}).limit(3),
     sb.from('library').select('title,created_at').order('created_at',{ascending:false}).limit(2)
   ]);
   const hEl=document.getElementById('hot-threads');hEl.innerHTML=hot?.length?hot.map(t=>`<div class="sw-item" onclick="openThreadById('${t.id}')" style="cursor:pointer"><i class="ti ti-arrow-up-right"></i>${t.title.slice(0,45)}${t.title.length>45?'...':''}</div>`).join(''):'<div class="sw-item"><i class="ti ti-zzz"></i>Sin actividad</div>';
   const cols=['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B','#FAECE7:#993C1D','#E6F1FB:#185FA5'];
-  const mEl=document.getElementById('mlist');mEl.innerHTML=members?.length?members.map((m,i)=>{const[bg,c]=cols[i%cols.length].split(':');return`<div class="mav" style="background:${bg};color:${c}" title="${m.username}">${m.avatar_initials||'??'}</div>`;}).join('')+`<span style="font-size:11px;color:var(--t600);margin-left:4px">${members.length} miembros</span>`:'<span style="font-size:12px;color:var(--tx3)">Sin miembros</span>';
+  const mEl=document.getElementById('mlist');mEl.innerHTML=members?.length?members.map((m,i)=>{const[bg,c]=cols[i%cols.length].split(':');return`<div class="mav" style="background:${bg};color:${c};cursor:pointer" title="${m.username} · ${m.respect||0} respeto" onclick="openProfile('${m.id}')">${m.avatar_initials||'??'}</div>`;}).join('')+`<span style="font-size:11px;color:var(--t600);margin-left:4px">${members.length} miembros</span>`:'<span style="font-size:12px;color:var(--tx3)">Sin miembros</span>';
   const wEl=document.getElementById('wiki-prev');wEl.innerHTML=wikis?.length?wikis.map(w=>`<div class="sw-item" onclick="openWikiDetail('${w.id}')" style="cursor:pointer"><i class="ti ti-file-description"></i>Clase ${w.class_number||''} — ${w.class_name.slice(0,30)}${w.class_name.length>30?'...':''}</div>`).join(''):'<div class="sw-item"><i class="ti ti-sparkles"></i>Sin páginas aún</div>';
   let acts=[];(thr||[]).forEach(t=>acts.push({time:t.created_at,text:`${t.is_anonymous?'Anónimo':t.profiles?.username||'Alguien'} publicó un hilo`,c:'#D85A30'}));(lib||[]).forEach(l=>acts.push({time:l.created_at,text:`Nuevo recurso: ${l.title?.slice(0,28)}`,c:'#1D9E75'}));acts.sort((a,b)=>new Date(b.time)-new Date(a.time));
   document.getElementById('act-feed').innerHTML=acts.slice(0,5).map(a=>`<div class="sw-item"><div style="width:6px;height:6px;border-radius:50%;background:${a.c};flex-shrink:0"></div>${a.text}</div>`).join('')||'<div class="sw-item" style="color:var(--tx3)">Sin actividad</div>';}
 
 // ── LIBRARY ──
+let libTrimFilter=null;
 function filterLib(cat,el){document.querySelectorAll('#pg-biblioteca .ftag').forEach(f=>f.classList.remove('active'));el.classList.add('active');libCat=cat;loadLib();}
-async function loadLib(){const g=document.getElementById('lib-grid');g.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';let q=sb.from('library').select('*,profiles(username)').order('created_at',{ascending:false});if(libCat)q=q.eq('category',libCat);const{data}=await q;
-if(!data?.length){g.innerHTML='<div class="empty"><i class="ti ti-book"></i><p>Biblioteca vacía. ¡Sube el primer recurso!</p></div>';return;}
+function filterLibTrim(n,el){document.querySelectorAll('#lib-trim-filters .ftag').forEach(f=>f.classList.remove('active'));el.classList.add('active');libTrimFilter=n;loadLib();}
+async function loadLib(){const g=document.getElementById('lib-grid');g.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+let q=sb.from('library').select('*,profiles(username)').order('created_at',{ascending:false});
+if(libCat)q=q.eq('category',libCat);
+if(libTrimFilter)q=q.contains('trimester_tags',[libTrimFilter]);
+const{data}=await q;
+if(!data?.length){g.innerHTML='<div class="empty"><i class="ti ti-book"></i><p>Sin recursos aquí. ¡Sube el primero!</p></div>';return;}
 const adm=isAdmin();
-g.innerHTML=data.map(item=>`<div class="lc" onclick="${item.file_url?`window.open('${item.file_url}','_blank')`:'void(0)'}">
+const vc=await getVoteCounts('library',data.map(d=>d.id));
+g.innerHTML=data.map(item=>{
+  const tags=(item.trimester_tags||[]).map(n=>`<span class="trim-chip">${TRIM_ORD[n]||n}</span>`).join('');
+  return `<div class="lc" onclick="${item.file_url?`window.open('${item.file_url}','_blank')`:'void(0)'}">
   <div class="lcov"><i class="ti ti-file-type-pdf"></i></div>
-  <div class="li"><div class="lt">${item.title}</div>${item.author?`<div class="la">${item.author}</div>`:''} ${item.description?`<div class="ld">${item.description}</div>`:''}</div>
-  <div class="lf"><span class="lcat">${item.category||'General'}</span>
-  <button class="like-btn" onclick="event.stopPropagation();likeIt('${item.id}','library',this)"><i class="ti ti-heart"></i>${item.likes}</button>
-  ${item.file_url?'<span style="font-size:11px;color:var(--p600);margin-left:auto;display:flex;align-items:center;gap:2px"><i class="ti ti-download" style="font-size:12px"></i>PDF</span>':''}
-  ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteLib('${item.id}')">×</button>`:''}
-  </div></div>`).join('');}
+  <div class="li"><div class="lt">${item.title}</div>${item.author?`<div class="la">${item.author}</div>`:''}${item.description?`<div class="ld">${item.description}</div>`:''}${tags?`<div style="margin-top:6px">${tags}</div>`:''}</div>
+  <div class="lf" style="flex-wrap:wrap;gap:6px">
+    <span class="lcat">${item.category||'General'}</span>
+    ${item.file_url?'<span style="font-size:11px;color:var(--p600);display:flex;align-items:center;gap:2px"><i class="ti ti-download" style="font-size:12px"></i>PDF</span>':''}
+    <button class="like-btn" onclick="event.stopPropagation();likeIt('${item.id}','library',this)"><i class="ti ti-heart"></i>${item.likes}</button>
+    ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteLib('${item.id}')">×</button>`:''}
+  </div>
+  <div style="padding:7px 13px;border-top:0.5px solid var(--br);background:var(--bg2)">${voteWidget('library',item.id,vc[item.id])}</div>
+  </div>`;}).join('');}
 
 async function deleteLib(id){if(!confirm('¿Eliminar?'))return;await sb.from('library').delete().eq('id',id);showToast('Eliminado','ok');loadLib();}
-function openLibModal(){document.getElementById('mo-lib').classList.add('open');libTab('file');}
+function openLibModal(){document.getElementById('mo-lib').classList.add('open');libTab('file');renderTrimPicker('lib-trim-tags',[profile?.trimestre?parseInt(profile.trimestre):4]);}
 let libMode='file';
 function libTab(m){libMode=m;document.getElementById('lib-file-wrap').style.display=m==='file'?'block':'none';document.getElementById('lib-url-wrap').style.display=m==='url'?'block':'none';document.getElementById('lib-tab-file').style.background=m==='file'?'var(--p50)':'var(--bg2)';document.getElementById('lib-tab-url').style.background=m==='url'?'var(--p50)':'var(--bg2)';}
 async function submitLib(){
   const t=document.getElementById('lt').value.trim(),a=document.getElementById('la').value.trim(),d=document.getElementById('ld').value.trim(),c=document.getElementById('lc').value,an=document.getElementById('la2').checked;
   if(!t){showToast('Título obligatorio','err');return;}
+  const tags=getTrimSelected('lib-trim-tags');
   let fileUrl=document.getElementById('lu').value.trim();
   if(libMode==='file'){
     const f=document.getElementById('lf').files[0];
@@ -682,7 +738,7 @@ async function submitLib(){
       status.textContent='Archivo subido ✓';status.style.color='var(--t400)';
     }
   }
-  const{error}=await sb.from('library').insert({title:t,author:a,description:d,file_url:fileUrl,category:c,uploaded_by:user.id,is_anonymous:an});
+  const{error}=await sb.from('library').insert({title:t,author:a,description:d,file_url:fileUrl,category:c,trimester_tags:tags,uploaded_by:user.id,is_anonymous:an});
   if(error){showToast('Error al guardar','err');return;}
   closeM('mo-lib');['lt','la','ld','lu'].forEach(id=>document.getElementById(id).value='');document.getElementById('lf').value='';document.getElementById('lib-upload-status').textContent='';
   showToast('Recurso agregado','ok');loadLib();
@@ -693,14 +749,17 @@ function getYtId(url){const m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)
 async function loadVids(){const g=document.getElementById('vid-grid');g.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';const{data}=await sb.from('videos').select('*').order('created_at',{ascending:false});
 if(!data?.length){g.innerHTML='<div class="empty"><i class="ti ti-player-play"></i><p>Videoteca vacía. ¡Agrega el primero!</p></div>';return;}
 const adm=isAdmin();
+const vvc=await getVoteCounts('video',data.map(d=>d.id));
 g.innerHTML=data.map(v=>`<div class="vc" onclick="playVid('${v.id}')">
   <div class="vt"><img src="https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg" alt="${v.title}" loading="lazy"><div class="vplay"><i class="ti ti-player-play"></i></div></div>
   <div class="vi"><div class="vtit">${v.title}</div>${v.description?`<div class="vdesc">${v.description.slice(0,90)}${v.description.length>90?'...':''}</div>`:''}
-  <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
+  <div style="margin-top:6px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">
     <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--pk50);color:var(--pk600)">${v.category||'General'}</span>
     <button class="like-btn" onclick="event.stopPropagation();likeIt('${v.id}','video',this)"><i class="ti ti-heart"></i>${v.likes}</button>
     ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteVid('${v.id}')">×</button>`:''}
-  </div></div></div>`).join('');}
+  </div>
+  <div style="margin-top:8px">${voteWidget('video',v.id,vvc[v.id])}</div>
+  </div></div>`).join('');}
 
 async function deleteVid(id){if(!confirm('¿Eliminar?'))return;await sb.from('videos').delete().eq('id',id);showToast('Eliminado','ok');loadVids();}
 async function playVid(id){nav('vplayer');const{data:v}=await sb.from('videos').select('*').eq('id',id).single();if(!v)return;document.getElementById('vplayer-content').innerHTML=`<div class="vembed" style="border-radius:var(--rl);overflow:hidden;margin-bottom:14px"><iframe src="https://www.youtube.com/embed/${v.youtube_id}?autoplay=1" allowfullscreen allow="autoplay"></iframe></div><h2 style="font-size:19px;font-family:var(--fs);color:var(--tx);margin-bottom:5px">${v.title}</h2>${v.description?`<p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-top:7px">${v.description}</p>`:''}<div style="margin-top:11px;display:flex;align-items:center;gap:9px"><span style="font-size:11px;padding:3px 9px;border-radius:20px;background:var(--pk50);color:var(--pk600)">${v.category||'General'}</span><button class="like-btn" onclick="likeIt('${v.id}','video',this)"><i class="ti ti-heart"></i>${v.likes} me gusta</button></div>`;}
@@ -712,61 +771,46 @@ async function loadWiki(){const l=document.getElementById('wiki-list');l.innerHT
 const cc=await Promise.all(pages.map(p=>sb.from('wiki_contributions').select('id,profiles(username,avatar_initials)',{count:'exact'}).eq('wiki_page_id',p.id)));
 const cols=['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B'];
 l.innerHTML=pages.map((p,i)=>{const contribs=cc[i].data||[];const cnt=cc[i].count||0;const avs=contribs.slice(0,4).map((c,j)=>{const[bg,co]=cols[j%4].split(':');return`<div class="cav2" style="background:${bg};color:${co}">${c.profiles?.avatar_initials||'??'}</div>`;}).join('');const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteWikiPage('${p.id}')">×</button>`:'';
-return`<div class="wpc" onclick="openWikiDetail('${p.id}')"><div class="wpch"><div><div class="wpct">Clase ${p.class_number||''} — ${p.class_name}</div><div class="wpcm">${cnt} aporte${cnt!==1?'s':''} · ${timeAgo(p.created_at)}</div></div><div style="display:flex;gap:6px;align-items:center"><div class="aib"><i class="ti ti-sparkles"></i>${p.ai_summary?'Sintetizado':'Sin síntesis'}</div>${adm}</div></div>${p.ai_summary?`<div class="wpcs">${p.ai_summary.slice(0,200)}${p.ai_summary.length>200?'...':''}</div>`:''} ${avs?`<div class="cavas">${avs}<span class="ct">${cnt} contribución${cnt!==1?'es':''}</span></div>`:''}</div>`;}).join('');}
+return`<div class="wpc" onclick="openWikiDetail('${p.id}')"><div class="wpch"><div><div class="wpct">Clase ${p.class_number||''} — ${p.class_name}</div><div class="wpcm">${cnt} aporte${cnt!==1?'s':''} · ${timeAgo(p.created_at)}</div></div><div style="display:flex;gap:6px;align-items:center"><div class="aib" style="background:var(--t50);color:var(--t600);border-color:var(--t100)"><i class="ti ti-users-group"></i>Colaborativo</div>${adm}</div></div>${avs?`<div class="cavas">${avs}<span class="ct">${cnt} contribución${cnt!==1?'es':''}</span></div>`:''}</div>`;}).join('');}
 
 async function deleteWikiPage(id){if(!confirm('¿Eliminar esta página?'))return;await sb.from('wiki_contributions').delete().eq('wiki_page_id',id);await sb.from('wiki_pages').delete().eq('id',id);showToast('Página eliminada','ok');loadWiki();}
 
 async function openWikiDetail(id){nav('wiki-detail');const c=document.getElementById('wiki-detail');c.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
 const[{data:page},{data:contribs}]=await Promise.all([sb.from('wiki_pages').select('*').eq('id',id).single(),sb.from('wiki_contributions').select('*,profiles(username,avatar_initials)').eq('wiki_page_id',id).order('created_at',{ascending:false})]);
 if(!page)return;
+const n=contribs?.length||0;
+const cvc=await getVoteCounts('wiki_contribution',(contribs||[]).map(co=>co.id));
 c.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
   <button class="back-btn" onclick="nav('wiki')" style="color:var(--tx2)"><i class="ti ti-arrow-left"></i> Wiki</button>
-  <div class="aib"><i class="ti ti-sparkles"></i> IA activa</div></div>
-<h1 style="font-family:var(--fs);font-size:26px;color:var(--tx);margin-bottom:3px">Clase ${page.class_number||''}</h1>
+  <div class="aib" style="background:var(--t50);color:var(--t600);border-color:var(--t100)"><i class="ti ti-users-group"></i> Wiki colaborativa</div></div>
+<h1 style="font-family:var(--fs);font-size:27px;color:var(--tx);margin-bottom:3px">Clase ${page.class_number||''}</h1>
 <h2 style="font-size:17px;color:var(--tx2);font-weight:400;margin-bottom:18px">${page.class_name}</h2>
-${page.ai_summary?`<div class="aisb"><div class="aisl"><i class="ti ti-sparkles"></i>Síntesis generada por IA</div><div class="aist">${page.ai_summary}</div></div>`:`<div class="aisb" style="border-color:var(--br);border-width:0.5px"><div class="aisl" style="color:var(--tx3)"><i class="ti ti-sparkles"></i>Sin síntesis aún</div><div style="font-size:13px;color:var(--tx3)">Agrega aportes y genera la síntesis.</div></div>`}
-<div class="wcb"><div class="wcl"><i class="ti ti-edit"></i>Agregar mis apuntes</div>
-<textarea class="fi fta" id="cb" placeholder="Escribe lo que viste en clase: conceptos, teorías, autores mencionados..." style="min-height:85px"></textarea>
-<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
+
+<div class="wcb"><div class="wcl"><i class="ti ti-edit"></i>Agregar mis apuntes de esta clase</div>
+<textarea class="fi fta" id="cb" placeholder="Escribe lo que viste en clase: conceptos, teorías, autores, definiciones..." style="min-height:90px"></textarea>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px;flex-wrap:wrap;gap:8px">
   <label class="ach"><input type="checkbox" id="ca" ${isAnon?'checked':''}> Anónimo</label>
-  <div style="display:flex;gap:7px">
-    <button class="btn btn-s btn-sm" onclick="synthesize('${id}')"><i class="ti ti-sparkles"></i> Sintetizar con IA</button>
-    <button class="btn btn-p btn-sm" onclick="submitContrib('${id}')">Publicar</button></div></div></div>
-<div style="font-size:13px;font-weight:500;color:var(--tx2);margin:14px 0 9px">${contribs?.length||0} aportes</div>
-<div>${(contribs||[]).map(co=>{const who=co.is_anonymous?'Anónimo':(co.profiles?.username||'Usuario');return`<div class="ci"><div class="cim">${who} · ${timeAgo(co.created_at)}</div><div class="cib">${co.content.replace(/\n/g,'<br>')}</div></div>`;}).join('')||'<div class="empty" style="padding:18px"><i class="ti ti-pencil"></i><p>Sé el primero en aportar</p></div>'}</div>`;}
+  <button class="btn btn-p btn-sm" onclick="submitContrib('${id}')"><i class="ti ti-plus"></i> Publicar apunte</button>
+</div>
+<div style="font-size:11px;color:var(--tx3);margin-top:8px"><i class="ti ti-info-circle" style="font-size:12px"></i> La comunidad vota cada apunte. Los apuntes con balance negativo (mín. 5 votos) se eliminan solos.</div></div>
 
-async function submitContrib(wid){const b=document.getElementById('cb').value.trim();const a=document.getElementById('ca').checked;if(!b){showToast('Escribe tus apuntes','err');return;}const{error}=await sb.from('wiki_contributions').insert({wiki_page_id:wid,author_id:user.id,content:b,is_anonymous:a});if(error){showToast('Error','err');return;}document.getElementById('cb').value='';showToast('Aporte publicado','ok');openWikiDetail(wid);}
+<div style="font-size:13px;font-weight:500;color:var(--tx2);margin:16px 0 9px">${n} aporte${n!==1?'s':''} de la comunidad</div>
+<div>${(contribs||[]).map(co=>{
+  const who=co.is_anonymous?'Anónimo':(co.profiles?.username||'Usuario');
+  const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:9px" onclick="deleteContrib('${co.id}','${id}')">×</button>`:'';
+  return`<div class="ci"><div class="cim" style="display:flex;align-items:center;gap:6px">${who} · ${timeAgo(co.created_at)}<span style="margin-left:auto">${adm}</span></div><div class="cib">${co.content.replace(/\n/g,'<br>')}</div><div style="margin-top:8px">${voteWidget('wiki_contribution',co.id,cvc[co.id])}</div></div>`;
+}).join('')||'<div class="empty" style="padding:18px"><i class="ti ti-pencil"></i><p>Sé el primero en aportar apuntes</p></div>'}</div>`;}
 
-async function synthesize(wid){
-  showToast('Sintetizando con IA...','ok');
-  const{data:contribs}=await sb.from('wiki_contributions').select('content').eq('wiki_page_id',wid);
-  if(!contribs?.length){showToast('Sin aportes para sintetizar','err');return;}
-  const text=contribs.map((c,i)=>`Aporte ${i+1}: ${c.content}`).join('\n\n');
-  const prompt=`Eres un asistente académico de psicología. Los siguientes son apuntes de estudiantes de una clase. Genera un resumen académico, coherente y estructurado de máximo 300 palabras que integre todos los aportes. Usa lenguaje técnico apropiado:\n\n${text}`;
-  const body=JSON.stringify({contents:[{parts:[{text:prompt}]}]});
-  const models=['gemini-2.0-flash','gemini-1.5-flash','gemini-1.5-flash-latest'];
-  // Try query-param auth then Bearer auth across models
-  for(const model of models){
-    const attempts=[
-      {url:`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_KEY}`,headers:{'Content-Type':'application/json'}},
-      {url:`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,headers:{'Content-Type':'application/json','Authorization':'Bearer '+GEMINI_KEY}},
-      {url:`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,headers:{'Content-Type':'application/json','x-goog-api-key':GEMINI_KEY}}
-    ];
-    for(const att of attempts){
-      try{
-        const r=await fetch(att.url,{method:'POST',headers:att.headers,body});
-        const d=await r.json();
-        if(r.ok){
-          const summary=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
-          if(summary){
-            await sb.from('wiki_pages').update({ai_summary:summary,last_synthesized_at:new Date().toISOString()}).eq('id',wid);
-            showToast('Síntesis generada ✓','ok');openWikiDetail(wid);return;
-          }
-        }
-      }catch(e){/* try next */}
-    }
-  }
-  showToast('La IA no funcionó con esta key. Revisa que sea formato AIzaSy','err');
+async function deleteContrib(cid,wid){if(!confirm('¿Eliminar este apunte?'))return;await sb.from('wiki_contributions').delete().eq('id',cid);showToast('Apunte eliminado','ok');openWikiDetail(wid);}
+
+async function submitContrib(wid){
+  const b=document.getElementById('cb').value.trim();const a=document.getElementById('ca').checked;
+  if(!b){showToast('Escribe tus apuntes','err');return;}
+  const{error}=await sb.from('wiki_contributions').insert({wiki_page_id:wid,author_id:user.id,content:b,is_anonymous:a});
+  if(error){showToast('Error al guardar','err');return;}
+  document.getElementById('cb').value='';
+  showToast('Apunte publicado','ok');
+  openWikiDetail(wid);
 }
 
 function openWikiNew(){document.getElementById('mo-wiki-new').classList.add('open');}
@@ -777,6 +821,89 @@ function closeM(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 function showToast(msg,type='ok'){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.className=`toast ${type}`;t.querySelector('i').className=type==='err'?'ti ti-alert-circle':'ti ti-check';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 function timeAgo(d){const s=(Date.now()-new Date(d))/1000;if(s<60)return'ahora';if(s<3600)return`hace ${Math.floor(s/60)}min`;if(s<86400)return`hace ${Math.floor(s/3600)}h`;if(s<604800)return`hace ${Math.floor(s/86400)}d`;return new Date(d).toLocaleDateString('es-MX',{day:'numeric',month:'short'});}
+
+// ── TRIMESTER HELPERS ──
+const TRIM_ORD={1:'1er',2:'2do',3:'3er',4:'4to',5:'5to',6:'6to',7:'7mo',8:'8vo',9:'9no',10:'10mo',11:'11vo',12:'12vo',13:'13vo'};
+function trimLabel(n){return (TRIM_ORD[n]||n)+' trim.';}
+
+function renderTrimPicker(containerId,selected){
+  const c=document.getElementById(containerId);if(!c)return;
+  c.dataset.selected=JSON.stringify(selected||[]);
+  c.innerHTML='';
+  for(let i=1;i<=13;i++){
+    const sel=(selected||[]).includes(i);
+    const d=document.createElement('div');
+    d.className='trim-tag'+(sel?' sel':'');
+    d.textContent=TRIM_ORD[i];
+    d.onclick=()=>{const cur=JSON.parse(c.dataset.selected);const idx=cur.indexOf(i);if(idx>=0)cur.splice(idx,1);else cur.push(i);c.dataset.selected=JSON.stringify(cur);d.classList.toggle('sel');};
+    c.appendChild(d);
+  }
+}
+function getTrimSelected(containerId){const c=document.getElementById(containerId);return c?JSON.parse(c.dataset.selected||'[]'):[];}
+
+// ── PROFILE ──
+async function openMyProfile(){openProfile(user.id);}
+async function openProfile(uid){
+  document.getElementById('mo-profile').classList.add('open');
+  const body=document.getElementById('profile-body');
+  body.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+  const{data:p}=await sb.from('profiles').select('*').eq('id',uid).single();
+  if(!p){body.innerHTML='<p style="font-size:13px;color:var(--tx3)">Perfil no encontrado</p>';return;}
+  const[{count:nThreads},{count:nReplies},{count:nLib},{count:nVid}]=await Promise.all([
+    sb.from('threads').select('id',{count:'exact',head:true}).eq('author_id',uid),
+    sb.from('replies').select('id',{count:'exact',head:true}).eq('author_id',uid),
+    sb.from('library').select('id',{count:'exact',head:true}).eq('uploaded_by',uid),
+    sb.from('videos').select('id',{count:'exact',head:true}).eq('added_by',uid)
+  ]);
+  const isMe=uid===user.id;
+  const cols=['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B'];
+  const[bg,col]=cols[(p.username?.length||0)%4].split(':');
+  body.innerHTML=`
+    <div class="prof-head">
+      <div class="prof-av" style="background:${bg};color:${col}">${p.avatar_initials||'??'}</div>
+      <div><div class="prof-name">${p.username}</div><div class="prof-meta">${p.trimestre?trimLabel(p.trimestre):'Sin trimestre'}</div>
+      <div style="margin-top:6px"><span class="respect-badge"><i class="ti ti-heart-handshake"></i> ${p.respect||0} de respeto</span></div></div>
+    </div>
+    <div class="prof-stats">
+      <div class="prof-stat"><div class="prof-stat-num">${nThreads||0}</div><div class="prof-stat-lbl">Hilos</div></div>
+      <div class="prof-stat"><div class="prof-stat-num">${nReplies||0}</div><div class="prof-stat-lbl">Respuestas</div></div>
+      <div class="prof-stat"><div class="prof-stat-num">${(nLib||0)+(nVid||0)}</div><div class="prof-stat-lbl">Recursos</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--tx3);text-align:center;margin:10px 0">El respeto sube cuando otros dan me gusta a tu contenido.</div>
+    ${isMe?`
+    <hr style="border:none;border-top:0.5px solid var(--br);margin:14px 0">
+    <div class="fg"><label class="fl">Cambiar mi trimestre</label>
+      <select class="fsel" id="prof-trim">${Object.keys(TRIM_ORD).map(n=>`<option value="${n}" ${String(p.trimestre)===n?'selected':''}>${TRIM_ORD[n]} trimestre</option>`).join('')}</select></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-p btn-sm" style="flex:1" onclick="saveTrim()">Guardar trimestre</button>
+      <button class="btn btn-s btn-sm" onclick="doLogout()"><i class="ti ti-logout"></i> Cerrar sesión</button>
+    </div>`:''}`;
+}
+async function saveTrim(){const t=document.getElementById('prof-trim').value;const{error}=await sb.from('profiles').update({trimestre:t}).eq('id',user.id);if(error){showToast('Error al guardar','err');return;}profile.trimestre=t;showToast('Trimestre actualizado','ok');closeM('mo-profile');}
+async function doLogout(){if(!confirm('¿Cerrar sesión?'))return;await sb.auth.signOut();}
+
+// ── VOTING (sistema de confianza) ──
+let myVotes={};
+async function loadMyVotes(){const{data}=await sb.from('content_votes').select('target_id,target_type,vote').eq('user_id',user.id);myVotes={};(data||[]).forEach(v=>{myVotes[v.target_type+':'+v.target_id]=v.vote;});}
+async function getVoteCounts(type,ids){if(!ids.length)return {};const{data}=await sb.from('content_votes').select('target_id,vote').eq('target_type',type).in('target_id',ids);const m={};ids.forEach(id=>m[id]={good:0,bad:0});(data||[]).forEach(v=>{if(v.vote===1)m[v.target_id].good++;else m[v.target_id].bad++;});return m;}
+function voteWidget(type,id,counts){
+  const key=type+':'+id;const my=myVotes[key];
+  const good=counts?.good||0,bad=counts?.bad||0,total=good+bad;
+  const ratio=good-bad;
+  const danger=total>=3&&ratio<0;
+  return `<div class="vote-box" onclick="event.stopPropagation()">
+    <button class="vote-btn up${my===1?' active':''}" onclick="castVote('${type}','${id}',1)"><i class="ti ti-arrow-big-up${my===1?'-filled':''}"></i>${good}</button>
+    <span class="vote-ratio${danger?' danger-zone':''}" title="${total} votos · mín. 5 para auto-borrado">${total<5?(5-total)+' p/validar':'✓'}</span>
+    <button class="vote-btn down${my===-1?' active':''}" onclick="castVote('${type}','${id}',-1)"><i class="ti ti-arrow-big-down${my===-1?'-filled':''}"></i>${bad}</button>
+  </div>`;
+}
+async function castVote(type,id,vote){
+  const key=type+':'+id;const cur=myVotes[key];
+  if(cur===vote){await sb.from('content_votes').delete().eq('user_id',user.id).eq('target_id',id).eq('target_type',type);delete myVotes[key];}
+  else{await sb.from('content_votes').upsert({user_id:user.id,target_id:id,target_type:type,vote},{onConflict:'user_id,target_id,target_type'});myVotes[key]=vote;}
+  showToast('Voto registrado','ok');
+  if(type==='library')loadLib();else if(type==='video')loadVids();
+}
 
 init();
 </script>
