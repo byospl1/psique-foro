@@ -9,338 +9,326 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --purple-50: #EEEDFE; --purple-100: #CECBF6; --purple-200: #AFA9EC;
-  --purple-400: #7F77DD; --purple-600: #534AB7; --purple-800: #3C3489; --purple-900: #26215C;
-  --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-400: #1D9E75; --teal-600: #0F6E56; --teal-900: #04342C;
-  --coral-50: #FAECE7; --coral-100: #F5C4B3; --coral-400: #D85A30; --coral-600: #993C1D;
-  --pink-50: #FBEAF0; --pink-400: #D4537E; --pink-600: #993556;
-  --amber-50: #FAEEDA; --amber-400: #BA7517; --amber-600: #854F0B;
-  --blue-50: #E6F1FB; --blue-400: #378ADD; --blue-600: #185FA5;
-  --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-400: #888780; --gray-600: #5F5E5A;
-  --bg: #ffffff; --bg2: #f8f7f5; --bg3: #f1efe8;
-  --text: #1a1a1a; --text2: #5a5a5a; --text3: #999;
-  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
-  --radius: 10px; --radius-lg: 14px;
-  --font: 'DM Sans', sans-serif; --font-serif: 'DM Serif Display', serif;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font); background: var(--bg2); color: var(--text); min-height: 100vh; }
+:root{--p50:#EEEDFE;--p100:#CECBF6;--p200:#AFA9EC;--p400:#7F77DD;--p600:#534AB7;--p800:#3C3489;--p900:#26215C;--t50:#E1F5EE;--t100:#9FE1CB;--t400:#1D9E75;--t600:#0F6E56;--t900:#04342C;--c50:#FAECE7;--c100:#F5C4B3;--c400:#D85A30;--c600:#993C1D;--pk50:#FBEAF0;--pk400:#D4537E;--pk600:#993556;--a50:#FAEEDA;--a400:#BA7517;--a600:#854F0B;--b50:#E6F1FB;--b400:#378ADD;--b600:#185FA5;--g50:#F1EFE8;--g100:#D3D1C7;--g400:#888780;--g600:#5F5E5A;--bg:#fff;--bg2:#f8f7f5;--bg3:#f1efe8;--tx:#1a1a1a;--tx2:#5a5a5a;--tx3:#999;--br:rgba(0,0,0,.08);--br2:rgba(0,0,0,.14);--r:10px;--rl:14px;--f:'DM Sans',sans-serif;--fs:'DM Serif Display',serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg2);color:var(--tx);min-height:100vh}
 
 /* TOPBAR */
-.topbar { background: var(--purple-900); padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 16px; position: sticky; top: 0; z-index: 100; }
-.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-.logo-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--purple-200); display: flex; align-items: center; justify-content: center; }
-.logo-icon i { font-size: 18px; color: var(--purple-900); }
-.logo-name { font-family: var(--font-serif); font-size: 20px; color: #fff; letter-spacing: -0.3px; }
-.logo-badge { font-size: 10px; color: var(--purple-400); background: var(--purple-800); padding: 2px 7px; border-radius: 20px; }
-.topbar-nav { display: flex; gap: 2px; margin-left: 8px; }
-.tnav { padding: 6px 12px; font-size: 13px; color: var(--purple-400); border-radius: 7px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; border: none; background: none; font-family: var(--font); }
-.tnav i { font-size: 15px; }
-.tnav:hover { background: var(--purple-800); color: var(--purple-100); }
-.tnav.active { background: var(--bg); color: var(--purple-600); font-weight: 500; }
-.tnav .nbadge { background: var(--pink-400); color: #fff; font-size: 9px; padding: 1px 5px; border-radius: 20px; margin-left: 2px; }
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-.anon-toggle { display: flex; align-items: center; gap: 5px; background: var(--purple-800); border: 0.5px solid var(--purple-600); border-radius: 20px; padding: 5px 11px; cursor: pointer; color: var(--purple-200); font-size: 12px; font-family: var(--font); transition: all 0.15s; }
-.anon-toggle.on { background: var(--purple-600); color: #fff; }
-.anon-toggle i { font-size: 14px; }
-.user-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--teal-400); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--teal-900); cursor: pointer; border: none; letter-spacing: 0.3px; }
-.auth-btn { font-size: 12px; padding: 6px 14px; border-radius: 7px; border: 0.5px solid var(--purple-400); background: transparent; color: var(--purple-200); cursor: pointer; font-family: var(--font); transition: all 0.15s; }
-.auth-btn:hover { background: var(--purple-800); }
-.auth-btn.primary { background: var(--purple-600); color: #fff; border-color: var(--purple-600); }
-.auth-btn.primary:hover { background: var(--purple-800); }
+.topbar{background:var(--p900);padding:0 20px;display:flex;align-items:center;height:54px;gap:12px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer}
+.logo-icon{width:30px;height:30px;border-radius:8px;background:var(--p200);display:flex;align-items:center;justify-content:center}
+.logo-icon i{font-size:17px;color:var(--p900)}
+.logo-name{font-family:var(--fs);font-size:19px;color:#fff}
+.logo-badge{font-size:10px;color:var(--p400);background:var(--p800);padding:2px 7px;border-radius:20px}
+.tnav-wrap{display:flex;gap:2px;margin-left:6px}
+.tnav{padding:5px 11px;font-size:13px;color:var(--p400);border-radius:7px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;border:none;background:none;font-family:var(--f)}
+.tnav i{font-size:14px}
+.tnav:hover{background:var(--p800);color:var(--p100)}
+.tnav.active{background:var(--bg);color:var(--p600);font-weight:500}
+.tnav .nb{background:var(--pk400);color:#fff;font-size:9px;padding:1px 5px;border-radius:20px;margin-left:2px}
+.tr{margin-left:auto;display:flex;align-items:center;gap:8px}
+.anon-btn{display:flex;align-items:center;gap:5px;background:var(--p800);border:0.5px solid var(--p600);border-radius:20px;padding:4px 10px;cursor:pointer;color:var(--p200);font-size:12px;font-family:var(--f);transition:all .15s}
+.anon-btn.on{background:var(--p600);color:#fff}
+.anon-btn i{font-size:13px}
+.uavatar{width:30px;height:30px;border-radius:50%;background:var(--t400);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--t900);cursor:pointer;border:none;letter-spacing:.3px;position:relative}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:var(--pk400);border:2px solid var(--p900);display:none}
+.notif-dot.show{display:block}
+
+/* MOBILE NAV */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--p900);border-top:0.5px solid var(--p800);padding:8px 0 12px;z-index:100;justify-content:space-around}
+.mnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--p400);font-size:10px;cursor:pointer;padding:4px 12px;border-radius:8px;transition:all .15s;border:none;background:none;font-family:var(--f)}
+.mnav-item i{font-size:20px}
+.mnav-item.active{color:var(--p200)}
+@media(max-width:680px){.tnav-wrap{display:none}.mobile-nav{display:flex}.container{padding:14px 12px 80px}}
 
 /* LAYOUT */
-.page { display: none; }
-.page.active { display: block; }
-.container { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
-.two-col { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
+.page{display:none}
+.page.active{display:block}
+.container{max-width:1100px;margin:0 auto;padding:22px 18px}
+.two-col{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
 
-/* CARDS */
-.card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-.card-body { padding: 16px; }
+/* SEARCH BAR */
+.search-wrap{position:relative;margin-bottom:14px}
+.search-input{width:100%;padding:9px 12px 9px 36px;border:0.5px solid var(--br2);border-radius:var(--r);font-size:13px;font-family:var(--f);color:var(--tx);background:var(--bg);transition:border-color .15s}
+.search-input:focus{outline:none;border-color:var(--p400)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--tx3)}
+.search-results{position:absolute;top:100%;left:0;right:0;background:var(--bg);border:0.5px solid var(--br2);border-radius:var(--r);z-index:50;max-height:280px;overflow-y:auto;display:none}
+.search-results.show{display:block}
+.sr-item{padding:10px 14px;cursor:pointer;border-bottom:0.5px solid var(--br);display:flex;align-items:center;gap:8px;font-size:13px;color:var(--tx)}
+.sr-item:hover{background:var(--bg2)}
+.sr-item i{font-size:14px;color:var(--p400)}
+.sr-tag{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--p50);color:var(--p600);margin-left:auto}
 
 /* COMPOSE */
-.compose-box { background: var(--bg); border: 0.5px solid var(--purple-200); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 16px; cursor: pointer; transition: border-color 0.15s; }
-.compose-box:hover { border-color: var(--purple-400); }
-.compose-inner { display: flex; align-items: center; gap: 10px; }
-.compose-av { width: 30px; height: 30px; border-radius: 50%; background: var(--teal-400); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--teal-900); flex-shrink: 0; }
-.compose-inner.anon-mode .compose-av { background: var(--gray-50); color: var(--gray-600); border: 1px dashed var(--gray-100); }
-.compose-placeholder { font-size: 13px; color: var(--text3); flex: 1; }
-.compose-chips { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--border); }
-.chip { font-size: 11px; padding: 3px 9px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text2); display: flex; align-items: center; gap: 3px; background: var(--bg2); }
-.chip i { font-size: 12px; }
+.compose-box{background:var(--bg);border:0.5px solid var(--p200);border-radius:var(--rl);padding:13px 15px;margin-bottom:14px;cursor:pointer;transition:border-color .15s}
+.compose-box:hover{border-color:var(--p400)}
+.compose-inner{display:flex;align-items:center;gap:10px}
+.cav{width:28px;height:28px;border-radius:50%;background:var(--t400);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--t900);flex-shrink:0}
+.cav.anon{background:var(--g50);color:var(--g600);border:1px dashed var(--g100)}
+.cph{font-size:13px;color:var(--tx3);flex:1}
+.compose-chips{display:flex;gap:6px;margin-top:9px;padding-top:9px;border-top:0.5px solid var(--br);flex-wrap:wrap}
+.chip{font-size:11px;padding:3px 8px;border-radius:20px;border:0.5px solid var(--br2);color:var(--tx2);display:flex;align-items:center;gap:3px;background:var(--bg2)}
+.chip i{font-size:12px}
 
-/* FILTROS */
-.filters { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
-.ftag { font-size: 12px; padding: 5px 12px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text2); cursor: pointer; transition: all 0.15s; background: var(--bg); }
-.ftag:hover { border-color: var(--purple-400); color: var(--purple-600); }
-.ftag.active { background: var(--purple-900); color: var(--purple-100); border-color: var(--purple-900); }
+/* FILTERS */
+.filters{display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap}
+.ftag{font-size:12px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--br2);color:var(--tx2);cursor:pointer;transition:all .15s;background:var(--bg)}
+.ftag:hover{border-color:var(--p400);color:var(--p600)}
+.ftag.active{background:var(--p900);color:var(--p100);border-color:var(--p900)}
 
 /* THREADS */
-.thread-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 10px; overflow: hidden; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
-.thread-card:hover { border-color: var(--purple-200); transform: translateY(-1px); }
-.tc-body { padding: 14px 16px 10px; display: flex; gap: 12px; }
-.tc-av { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
-.tc-av.anon { background: var(--gray-50); color: var(--gray-600); border: 1px dashed var(--gray-100); }
-.tc-meta { font-size: 11px; color: var(--text3); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.anon-pill { background: var(--gray-50); color: var(--gray-600); font-size: 10px; padding: 1px 6px; border-radius: 4px; border: 0.5px solid var(--gray-100); }
-.tc-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.45; margin-bottom: 5px; }
-.tc-preview { font-size: 12px; color: var(--text2); line-height: 1.55; }
-.tc-footer { padding: 7px 16px; border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 12px; background: var(--bg2); }
-.tc-stat { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 3px; }
-.tc-stat i { font-size: 13px; }
-.topic-pill { margin-left: auto; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.tc{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .1s}
+.tc:hover{border-color:var(--p200);transform:translateY(-1px)}
+.tc-body{padding:13px 15px 9px;display:flex;gap:11px}
+.tav{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.tav.anon{background:var(--g50);color:var(--g600);border:1px dashed var(--g100)}
+.tc-who{font-size:11px;color:var(--tx3);margin-bottom:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.ap{background:var(--g50);color:var(--g600);font-size:10px;padding:1px 6px;border-radius:4px;border:0.5px solid var(--g100)}
+.tc-title{font-size:14px;font-weight:500;color:var(--tx);line-height:1.4;margin-bottom:4px}
+.tc-prev{font-size:12px;color:var(--tx2);line-height:1.5}
+.tc-foot{padding:7px 15px;border-top:0.5px solid var(--br);display:flex;align-items:center;gap:10px;background:var(--bg2)}
+.tc-stat{font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:3px}
+.tc-stat i{font-size:13px}
+.tpill{margin-left:auto;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.new-badge{font-size:9px;background:var(--pk400);color:#fff;padding:1px 5px;border-radius:20px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
 
-/* SIDEBAR WIDGETS */
-.sw { border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 12px; }
-.sw-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
-.sw-label i { font-size: 13px; }
-.sw-item { font-size: 12px; padding: 5px 0; border-bottom: 0.5px solid rgba(0,0,0,0.06); display: flex; align-items: center; gap: 6px; line-height: 1.4; }
-.sw-item:last-child { border-bottom: none; padding-bottom: 0; }
-.sw-item i { font-size: 13px; flex-shrink: 0; }
-.sw.hot { background: var(--coral-50); border: 0.5px solid var(--coral-100); }
-.sw.hot .sw-label { color: var(--coral-600); }
-.sw.hot .sw-item { color: var(--coral-600); border-color: var(--coral-100); }
-.sw.hot .sw-item i { color: var(--coral-400); }
-.sw.members { background: var(--teal-50); border: 0.5px solid var(--teal-100); }
-.sw.members .sw-label { color: var(--teal-600); }
-.sw.wiki-sw { background: var(--purple-50); border: 0.5px solid var(--purple-100); }
-.sw.wiki-sw .sw-label { color: var(--purple-800); }
-.sw.wiki-sw .sw-item { color: var(--purple-600); border-color: var(--purple-100); }
-.sw.wiki-sw .sw-item i { color: var(--purple-400); }
-.member-avatars { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
-.mav { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; border: 2px solid var(--teal-50); }
-.act-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+/* NOTIF PANEL */
+.notif-panel{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:12px 14px;margin-bottom:12px;display:none}
+.notif-panel.show{display:block}
+.notif-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--br);font-size:12px;color:var(--tx2);cursor:pointer}
+.notif-item:last-child{border-bottom:none}
+.notif-item i{font-size:14px;color:var(--p400);flex-shrink:0;margin-top:1px}
+.notif-item.unread{color:var(--tx);font-weight:500}
+
+/* SIDEBAR */
+.sw{border-radius:var(--rl);padding:11px 13px;margin-bottom:11px}
+.sw-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.sw-label i{font-size:13px}
+.sw-item{font-size:12px;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,.06);display:flex;align-items:center;gap:6px;line-height:1.4}
+.sw-item:last-child{border-bottom:none}
+.sw-item i{font-size:13px;flex-shrink:0}
+.sw.hot{background:var(--c50);border:0.5px solid var(--c100)}
+.sw.hot .sw-label{color:var(--c600)}
+.sw.hot .sw-item{color:var(--c600);border-color:var(--c100)}
+.sw.hot .sw-item i{color:var(--c400)}
+.sw.members{background:var(--t50);border:0.5px solid var(--t100)}
+.sw.members .sw-label{color:var(--t600)}
+.sw.wiki-sw{background:var(--p50);border:0.5px solid var(--p100)}
+.sw.wiki-sw .sw-label{color:var(--p800)}
+.sw.wiki-sw .sw-item{color:var(--p600);border-color:var(--p100)}
+.sw.wiki-sw .sw-item i{color:var(--p400)}
+.mavs{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.mav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;border:2px solid var(--t50)}
 
 /* MODAL */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(38,33,92,0.45); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--bg); border-radius: var(--radius-lg); width: 100%; max-width: 560px; overflow: hidden; }
-.modal-header { padding: 16px 20px; border-bottom: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--purple-900); }
-.modal-header h2 { font-size: 15px; font-weight: 500; color: #fff; font-family: var(--font); }
-.modal-close { background: none; border: none; color: var(--purple-300); cursor: pointer; font-size: 20px; line-height: 1; padding: 0; }
-.modal-body { padding: 20px; }
-.form-group { margin-bottom: 14px; }
-.form-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 5px; display: block; }
-.form-input { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 13px; font-family: var(--font); color: var(--text); background: var(--bg); transition: border-color 0.15s; }
-.form-input:focus { outline: none; border-color: var(--purple-400); }
-.form-textarea { resize: vertical; min-height: 100px; }
-.form-select { width: 100%; padding: 9px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 13px; font-family: var(--font); color: var(--text); background: var(--bg); }
-.form-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
-.anon-check { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); cursor: pointer; }
-.anon-check input { accent-color: var(--purple-600); }
-.btn { padding: 8px 18px; border-radius: var(--radius); font-size: 13px; font-family: var(--font); font-weight: 500; cursor: pointer; transition: all 0.15s; border: none; }
-.btn-primary { background: var(--purple-600); color: #fff; }
-.btn-primary:hover { background: var(--purple-800); }
-.btn-secondary { background: var(--bg2); color: var(--text2); border: 0.5px solid var(--border2); }
-.btn-secondary:hover { background: var(--bg3); }
-.btn-sm { padding: 5px 12px; font-size: 12px; }
+.mo{display:none;position:fixed;inset:0;background:rgba(38,33,92,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.mo.open{display:flex}
+.modal{background:var(--bg);border-radius:var(--rl);width:100%;max-width:540px;overflow:hidden}
+.mh{padding:14px 18px;border-bottom:0.5px solid var(--br);display:flex;align-items:center;justify-content:space-between;background:var(--p900)}
+.mh h2{font-size:15px;font-weight:500;color:#fff;font-family:var(--f)}
+.mc-btn{background:none;border:none;color:var(--p300);cursor:pointer;font-size:20px;line-height:1;padding:0}
+.mb{padding:18px}
+.fg{margin-bottom:13px}
+.fl{font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:4px;display:block}
+.fi{width:100%;padding:9px 11px;border:0.5px solid var(--br2);border-radius:var(--r);font-size:13px;font-family:var(--f);color:var(--tx);background:var(--bg);transition:border-color .15s}
+.fi:focus{outline:none;border-color:var(--p400)}
+.fta{resize:vertical;min-height:90px}
+.fsel{width:100%;padding:9px 11px;border:0.5px solid var(--br2);border-radius:var(--r);font-size:13px;font-family:var(--f);color:var(--tx);background:var(--bg)}
+.mfoot{display:flex;align-items:center;justify-content:space-between;padding-top:4px}
+.ach{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2);cursor:pointer}
+.ach input{accent-color:var(--p600)}
+.btn{padding:7px 16px;border-radius:var(--r);font-size:13px;font-family:var(--f);font-weight:500;cursor:pointer;transition:all .15s;border:none}
+.btn-p{background:var(--p600);color:#fff}
+.btn-p:hover{background:var(--p800)}
+.btn-s{background:var(--bg2);color:var(--tx2);border:0.5px solid var(--br2)}
+.btn-s:hover{background:var(--bg3)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-danger{background:#fee2e2;color:#991b1b;border:0.5px solid #fca5a5}
+.btn-danger:hover{background:#fca5a5}
 
 /* THREAD DETAIL */
-.thread-detail-header { background: var(--purple-900); padding: 20px 24px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-.back-btn { display: flex; align-items: center; gap: 5px; color: var(--purple-300); font-size: 12px; cursor: pointer; background: none; border: none; font-family: var(--font); margin-bottom: 12px; padding: 0; }
-.back-btn:hover { color: var(--purple-100); }
-.thread-detail-title { font-family: var(--font-serif); font-size: 24px; color: #fff; line-height: 1.3; margin-bottom: 8px; }
-.thread-detail-meta { font-size: 12px; color: var(--purple-300); display: flex; gap: 12px; flex-wrap: wrap; }
-.reply-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; }
-.reply-body { font-size: 13px; color: var(--text); line-height: 1.65; margin-top: 4px; }
-.reply-meta { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
-.reply-compose { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-top: 14px; }
+.tdh{background:var(--p900);padding:18px 22px;border-radius:var(--rl) var(--rl) 0 0}
+.back-btn{display:flex;align-items:center;gap:5px;color:var(--p300);font-size:12px;cursor:pointer;background:none;border:none;font-family:var(--f);margin-bottom:11px;padding:0}
+.back-btn:hover{color:var(--p100)}
+.td-title{font-family:var(--fs);font-size:23px;color:#fff;line-height:1.3;margin-bottom:7px}
+.td-meta{font-size:12px;color:var(--p300);display:flex;gap:10px;flex-wrap:wrap}
+.rc{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:13px 15px;margin-bottom:9px;display:flex;gap:11px}
+.rb{font-size:13px;color:var(--tx);line-height:1.7;margin-top:3px}
+.rm{font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:5px}
 
-/* BIBLIOTECA */
-.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.lib-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.15s, border-color 0.15s; cursor: pointer; }
-.lib-card:hover { transform: translateY(-2px); border-color: var(--teal-100); }
-.lib-cover { height: 80px; background: var(--purple-50); display: flex; align-items: center; justify-content: center; border-bottom: 0.5px solid var(--border); }
-.lib-cover i { font-size: 32px; color: var(--purple-400); }
-.lib-info { padding: 12px 14px; }
-.lib-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; line-height: 1.35; }
-.lib-author { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
-.lib-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
-.lib-footer { padding: 8px 14px; border-top: 0.5px solid var(--border); display: flex; align-items: center; gap: 8px; background: var(--bg2); }
-.lib-cat { font-size: 10px; padding: 2px 7px; border-radius: 20px; background: var(--teal-50); color: var(--teal-600); }
+/* LIBRARY */
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:13px}
+.lc{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);overflow:hidden;transition:transform .15s,border-color .15s;cursor:pointer}
+.lc:hover{transform:translateY(-2px);border-color:var(--t100)}
+.lcov{height:72px;background:var(--p50);display:flex;align-items:center;justify-content:center;border-bottom:0.5px solid var(--br)}
+.lcov i{font-size:30px;color:var(--p400)}
+.li{padding:11px 13px}
+.lt{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:2px;line-height:1.3}
+.la{font-size:11px;color:var(--tx3);margin-bottom:5px}
+.ld{font-size:11px;color:var(--tx2);line-height:1.5}
+.lf{padding:7px 13px;border-top:0.5px solid var(--br);display:flex;align-items:center;gap:7px;background:var(--bg2)}
+.lcat{font-size:10px;padding:2px 7px;border-radius:20px;background:var(--t50);color:var(--t600)}
 
-/* VIDEOTECA */
-.vid-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-.vid-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: transform 0.15s, border-color 0.15s; cursor: pointer; }
-.vid-card:hover { transform: translateY(-2px); border-color: var(--pink-400); }
-.vid-thumb { position: relative; padding-bottom: 56.25%; background: var(--gray-50); }
-.vid-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.vid-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(38,33,92,0.4); }
-.vid-play i { font-size: 40px; color: #fff; }
-.vid-info { padding: 12px 14px; }
-.vid-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; line-height: 1.35; }
-.vid-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
-.vid-embed { position: relative; padding-bottom: 56.25%; height: 0; }
-.vid-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+/* VIDEO */
+.vg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px}
+.vc{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);overflow:hidden;transition:transform .15s,border-color .15s;cursor:pointer}
+.vc:hover{transform:translateY(-2px);border-color:var(--pk400)}
+.vt{position:relative;padding-bottom:56.25%;background:var(--g50)}
+.vt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(38,33,92,.4)}
+.vplay i{font-size:38px;color:#fff}
+.vi{padding:11px 13px}
+.vtit{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:2px;line-height:1.3}
+.vdesc{font-size:11px;color:var(--tx2);line-height:1.5}
+.vembed{position:relative;padding-bottom:56.25%;height:0}
+.vembed iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
 
 /* WIKI */
-.wiki-page-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden; cursor: pointer; transition: border-color 0.15s; }
-.wiki-page-card:hover { border-color: var(--purple-200); }
-.wpc-header { padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-.wpc-title { font-size: 14px; font-weight: 500; color: var(--text); }
-.wpc-meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.ai-badge { font-size: 10px; background: var(--purple-50); color: var(--purple-600); padding: 2px 7px; border-radius: 5px; border: 0.5px solid var(--purple-100); display: flex; align-items: center; gap: 3px; }
-.ai-badge i { font-size: 11px; }
-.wpc-summary { padding: 0 16px 14px; font-size: 12px; color: var(--text2); line-height: 1.65; border-top: 0.5px solid var(--border); padding-top: 12px; }
-.contrib-avatars { display: flex; gap: 3px; align-items: center; padding: 8px 16px; border-top: 0.5px solid var(--border); background: var(--bg2); }
-.cav { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 600; border: 1.5px solid var(--bg2); }
-.contrib-text { font-size: 10px; color: var(--text3); margin-left: 5px; }
-
-/* WIKI DETAIL */
-.wiki-contrib-box { background: var(--purple-50); border: 0.5px solid var(--purple-100); border-radius: var(--radius-lg); padding: 14px 16px; margin-top: 14px; }
-.wiki-contrib-label { font-size: 12px; font-weight: 500; color: var(--purple-800); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
-.contrib-list { margin-top: 12px; }
-.contrib-item { background: var(--bg); border: 0.5px solid var(--purple-100); border-radius: var(--radius); padding: 10px 12px; margin-bottom: 8px; }
-.contrib-item-meta { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
-.contrib-item-body { font-size: 12px; color: var(--text); line-height: 1.6; }
-.ai-summary-box { background: var(--bg); border: 2px solid var(--purple-200); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 16px; }
-.ai-summary-label { font-size: 11px; font-weight: 600; color: var(--purple-600); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
-.ai-summary-label i { font-size: 14px; }
-.ai-summary-text { font-size: 13px; color: var(--text); line-height: 1.75; font-family: var(--font-serif); font-style: italic; }
+.wpc{background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);margin-bottom:11px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.wpc:hover{border-color:var(--p200)}
+.wpch{padding:13px 15px;display:flex;align-items:center;justify-content:space-between}
+.wpct{font-size:14px;font-weight:500;color:var(--tx)}
+.wpcm{font-size:11px;color:var(--tx3);margin-top:2px}
+.aib{font-size:10px;background:var(--p50);color:var(--p600);padding:2px 7px;border-radius:5px;border:0.5px solid var(--p100);display:flex;align-items:center;gap:3px}
+.aib i{font-size:11px}
+.wpcs{padding:0 15px 13px;font-size:12px;color:var(--tx2);line-height:1.65;border-top:0.5px solid var(--br);padding-top:11px}
+.cavas{display:flex;gap:3px;align-items:center;padding:7px 15px;border-top:0.5px solid var(--br);background:var(--bg2)}
+.cav2{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;border:1.5px solid var(--bg2)}
+.ct{font-size:10px;color:var(--tx3);margin-left:5px}
+.wcb{background:var(--p50);border:0.5px solid var(--p100);border-radius:var(--rl);padding:13px 15px;margin-top:13px}
+.wcl{font-size:12px;font-weight:500;color:var(--p800);margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.aisb{background:var(--bg);border:2px solid var(--p200);border-radius:var(--rl);padding:14px 16px;margin-bottom:14px}
+.aisl{font-size:11px;font-weight:600;color:var(--p600);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.aisl i{font-size:14px}
+.aist{font-size:13px;color:var(--tx);line-height:1.8;font-family:var(--fs);font-style:italic}
+.ci{background:var(--bg);border:0.5px solid var(--p100);border-radius:var(--r);padding:9px 11px;margin-bottom:7px}
+.cim{font-size:11px;color:var(--tx3);margin-bottom:3px}
+.cib{font-size:12px;color:var(--tx);line-height:1.6}
 
 /* AUTH */
-.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--purple-900); padding: 20px; }
-.auth-card { background: var(--bg); border-radius: var(--radius-lg); width: 100%; max-width: 400px; overflow: hidden; }
-.auth-card-header { background: var(--purple-900); padding: 28px 28px 20px; text-align: center; }
-.auth-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px; }
-.auth-logo-icon { width: 38px; height: 38px; border-radius: 11px; background: var(--purple-200); display: flex; align-items: center; justify-content: center; }
-.auth-logo-icon i { font-size: 22px; color: var(--purple-900); }
-.auth-logo-name { font-family: var(--font-serif); font-size: 26px; color: #fff; }
-.auth-subtitle { font-size: 12px; color: var(--purple-300); }
-.auth-body { padding: 24px 28px; }
-.auth-tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--border); margin-bottom: 20px; }
-.auth-tab { flex: 1; padding: 8px; text-align: center; font-size: 13px; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s; }
-.auth-tab.active { color: var(--purple-600); border-bottom-color: var(--purple-600); font-weight: 500; }
-.auth-msg { font-size: 12px; color: var(--text2); text-align: center; margin-top: 12px; }
-.auth-msg.error { color: #E24B4A; }
-.auth-msg.success { color: var(--teal-400); }
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--p900);padding:20px}
+.auth-card{background:var(--bg);border-radius:var(--rl);width:100%;max-width:390px;overflow:hidden}
+.ach2{background:var(--p900);padding:26px 26px 18px;text-align:center}
+.alogo{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:5px}
+.alogo-icon{width:36px;height:36px;border-radius:10px;background:var(--p200);display:flex;align-items:center;justify-content:center}
+.alogo-icon i{font-size:21px;color:var(--p900)}
+.alogo-name{font-family:var(--fs);font-size:24px;color:#fff}
+.asub{font-size:12px;color:var(--p300)}
+.abody{padding:22px 26px}
+.atabs{display:flex;border-bottom:0.5px solid var(--br);margin-bottom:18px}
+.atab{flex:1;padding:7px;text-align:center;font-size:13px;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-.5px;transition:all .15s}
+.atab.active{color:var(--p600);border-bottom-color:var(--p600);font-weight:500}
+.amsg{font-size:12px;color:var(--tx2);text-align:center;margin-top:11px}
+.amsg.err{color:#E24B4A}
+.amsg.ok{color:var(--t400)}
 
-/* LOADING / EMPTY */
-.loading { text-align: center; padding: 40px; color: var(--text3); font-size: 13px; }
-.loading i { font-size: 28px; display: block; margin-bottom: 8px; animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.empty { text-align: center; padding: 40px; color: var(--text3); }
-.empty i { font-size: 36px; display: block; margin-bottom: 10px; color: var(--purple-200); }
-.empty p { font-size: 13px; }
+/* ADMIN */
+.admin-badge{font-size:9px;background:var(--a50);color:var(--a600);padding:1px 5px;border-radius:4px;border:0.5px solid var(--a400)}
 
-/* TOAST */
-.toast { position: fixed; bottom: 24px; right: 24px; background: var(--purple-900); color: #fff; padding: 10px 16px; border-radius: var(--radius); font-size: 13px; z-index: 999; display: flex; align-items: center; gap: 8px; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast i { font-size: 16px; }
-.toast.success i { color: var(--teal-400); }
-.toast.error i { color: #F09595; }
-
-/* MISC */
-.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.section-title { font-size: 14px; font-weight: 500; color: var(--text); }
-.section-action { font-size: 12px; color: var(--purple-600); cursor: pointer; background: none; border: none; font-family: var(--font); display: flex; align-items: center; gap: 4px; }
-.section-action:hover { text-decoration: underline; }
-hr { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
-.like-btn { background: none; border: none; font-size: 11px; color: var(--text3); cursor: pointer; display: flex; align-items: center; gap: 3px; font-family: var(--font); padding: 0; transition: color 0.15s; }
-.like-btn:hover, .like-btn.liked { color: var(--pink-400); }
-.like-btn i { font-size: 14px; }
-
-@media (max-width: 768px) {
-  .two-col { grid-template-columns: 1fr; }
-  .topbar-nav { display: none; }
-  .container { padding: 16px 12px; }
-}
+/* UTILS */
+.loading{text-align:center;padding:36px;color:var(--tx3);font-size:13px}
+.loading i{font-size:26px;display:block;margin-bottom:7px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:36px;color:var(--tx3)}
+.empty i{font-size:34px;display:block;margin-bottom:9px;color:var(--p200)}
+.empty p{font-size:13px}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--p900);color:#fff;padding:9px 15px;border-radius:var(--r);font-size:13px;z-index:999;display:flex;align-items:center;gap:7px;transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast i{font-size:15px}
+.toast.ok i{color:var(--t400)}
+.toast.err i{color:#F09595}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.st{font-size:14px;font-weight:500;color:var(--tx)}
+.like-btn{background:none;border:none;font-size:11px;color:var(--tx3);cursor:pointer;display:flex;align-items:center;gap:3px;font-family:var(--f);padding:0;transition:color .15s}
+.like-btn:hover,.like-btn.liked{color:var(--pk400)}
+.like-btn i{font-size:14px}
 </style>
 </head>
 <body>
 
-<!-- AUTH PAGE -->
-<div id="auth-page" class="auth-page" style="display:none;">
+<!-- AUTH -->
+<div id="auth-page" class="auth-page" style="display:none">
   <div class="auth-card">
-    <div class="auth-card-header">
-      <div class="auth-logo">
-        <div class="auth-logo-icon"><i class="ti ti-brain"></i></div>
-        <span class="auth-logo-name">Psique</span>
+    <div class="ach2">
+      <div class="alogo">
+        <div class="alogo-icon"><i class="ti ti-brain"></i></div>
+        <span class="alogo-name">Psique</span>
       </div>
-      <div class="auth-subtitle">Foro académico · 4to trimestre</div>
+      <div class="asub">Foro académico · 4to trimestre</div>
     </div>
-    <div class="auth-body">
-      <div class="auth-tabs">
-        <div class="auth-tab active" onclick="switchAuthTab('login')">Iniciar sesión</div>
-        <div class="auth-tab" onclick="switchAuthTab('register')">Registrarse</div>
+    <div class="abody">
+      <div class="atabs">
+        <div class="atab active" onclick="switchTab('login',this)">Iniciar sesión</div>
+        <div class="atab" onclick="switchTab('reg',this)">Registrarse</div>
       </div>
-      <div id="auth-login">
-        <div class="form-group">
-          <label class="form-label">Correo</label>
-          <input class="form-input" type="email" id="login-email" placeholder="tu@correo.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contraseña</label>
-          <input class="form-input" type="password" id="login-pass" placeholder="••••••••">
-        </div>
-        <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Entrar</button>
-        <div id="login-msg" class="auth-msg"></div>
+      <div id="tab-login">
+        <div class="fg"><label class="fl">Correo</label><input class="fi" type="email" id="le" placeholder="tu@correo.com"></div>
+        <div class="fg"><label class="fl">Contraseña</label><input class="fi" type="password" id="lp" placeholder="••••••••"></div>
+        <button class="btn btn-p" style="width:100%" onclick="doLogin()">Entrar</button>
+        <div id="lmsg" class="amsg"></div>
       </div>
-      <div id="auth-register" style="display:none;">
-        <div class="form-group">
-          <label class="form-label">Usuario</label>
-          <input class="form-input" type="text" id="reg-username" placeholder="tuusuario">
+      <div id="tab-reg" style="display:none">
+        <div class="fg"><label class="fl">Usuario</label><input class="fi" type="text" id="ru" placeholder="tuusuario"></div>
+        <div class="fg"><label class="fl">Correo</label><input class="fi" type="email" id="re" placeholder="tu@correo.com"></div>
+        <div class="fg"><label class="fl">Contraseña</label><input class="fi" type="password" id="rp" placeholder="mínimo 6 caracteres"></div>
+        <div class="fg"><label class="fl">Trimestre</label>
+          <select class="fsel" id="rt"><option>1ro</option><option>2do</option><option>3ro</option><option value="4to" selected>4to</option><option>5to</option></select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Correo</label>
-          <input class="form-input" type="email" id="reg-email" placeholder="tu@correo.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Contraseña</label>
-          <input class="form-input" type="password" id="reg-pass" placeholder="mínimo 6 caracteres">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Trimestre</label>
-          <select class="form-select" id="reg-trimestre">
-            <option value="1ro">1er trimestre</option>
-            <option value="2do">2do trimestre</option>
-            <option value="3ro">3er trimestre</option>
-            <option value="4to" selected>4to trimestre</option>
-            <option value="5to">5to trimestre</option>
-          </select>
-        </div>
-        <button class="btn btn-primary" style="width:100%" onclick="doRegister()">Crear cuenta</button>
-        <div id="reg-msg" class="auth-msg"></div>
+        <button class="btn btn-p" style="width:100%" onclick="doReg()">Crear cuenta</button>
+        <div id="rmsg" class="amsg"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="main-app" style="display:none;">
-
+<!-- APP -->
+<div id="app" style="display:none">
 <div class="topbar">
-  <a class="logo" href="#" onclick="navigate('debates')">
+  <div class="logo" onclick="nav('debates')">
     <div class="logo-icon"><i class="ti ti-brain"></i></div>
     <span class="logo-name">Psique</span>
     <span class="logo-badge">4to trim.</span>
-  </a>
-  <div class="topbar-nav">
-    <button class="tnav active" id="nav-debates" onclick="navigate('debates')"><i class="ti ti-messages"></i> Debates <span class="nbadge" id="debates-count">0</span></button>
-    <button class="tnav" id="nav-biblioteca" onclick="navigate('biblioteca')"><i class="ti ti-book"></i> Biblioteca</button>
-    <button class="tnav" id="nav-videoteca" onclick="navigate('videoteca')"><i class="ti ti-player-play"></i> Videoteca</button>
-    <button class="tnav" id="nav-wiki" onclick="navigate('wiki')"><i class="ti ti-notes"></i> Wiki</button>
   </div>
-  <div class="topbar-right">
-    <button class="anon-toggle" id="anon-toggle" onclick="toggleAnon()">
-      <i class="ti ti-ghost"></i>
-      <span id="anon-label">modo anónimo</span>
-    </button>
-    <button class="user-btn" id="user-initials" onclick="doLogout()"></button>
+  <div class="tnav-wrap">
+    <button class="tnav active" id="tn-debates" onclick="nav('debates')"><i class="ti ti-messages"></i> Debates <span class="nb" id="dc">0</span></button>
+    <button class="tnav" id="tn-biblioteca" onclick="nav('biblioteca')"><i class="ti ti-book"></i> Biblioteca</button>
+    <button class="tnav" id="tn-videoteca" onclick="nav('videoteca')"><i class="ti ti-player-play"></i> Videoteca</button>
+    <button class="tnav" id="tn-wiki" onclick="nav('wiki')"><i class="ti ti-notes"></i> Wiki</button>
+  </div>
+  <div class="tr">
+    <button class="anon-btn" id="anon-btn" onclick="toggleAnon()"><i class="ti ti-ghost"></i><span id="anon-lbl">anónimo</span></button>
+    <div class="uavatar" id="uavatar" onclick="toggleNotifs()">
+      <span id="uinit"></span>
+      <div class="notif-dot" id="ndot"></div>
+    </div>
   </div>
 </div>
 
-<!-- DEBATES PAGE -->
-<div id="page-debates" class="page active">
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <button class="mnav-item active" id="mn-debates" onclick="nav('debates')"><i class="ti ti-messages"></i>Debates</button>
+  <button class="mnav-item" id="mn-biblioteca" onclick="nav('biblioteca')"><i class="ti ti-book"></i>Biblioteca</button>
+  <button class="mnav-item" id="mn-videoteca" onclick="nav('videoteca')"><i class="ti ti-player-play"></i>Videos</button>
+  <button class="mnav-item" id="mn-wiki" onclick="nav('wiki')"><i class="ti ti-notes"></i>Wiki</button>
+</div>
+
+<!-- DEBATES -->
+<div id="pg-debates" class="page active">
   <div class="container">
+    <div id="notif-panel" class="notif-panel"></div>
     <div class="two-col">
       <div>
-        <div class="compose-box" onclick="openNewThread()">
-          <div class="compose-inner" id="compose-inner">
-            <div class="compose-av" id="compose-av"></div>
-            <div class="compose-placeholder">¿Qué quieres debatir hoy? Escribe un hilo o publica como fantasma...</div>
+        <div class="search-wrap">
+          <i class="ti ti-search search-icon"></i>
+          <input class="search-input" id="search-in" placeholder="Buscar hilos, biblioteca, wiki..." oninput="doSearch(this.value)">
+          <div class="search-results" id="search-res"></div>
+        </div>
+        <div class="compose-box" onclick="openThread()">
+          <div class="compose-inner" id="ci">
+            <div class="cav" id="cav-compose"></div>
+            <div class="cph">¿Qué quieres debatir? Publica con tu nombre o como fantasma...</div>
           </div>
           <div class="compose-chips">
             <div class="chip"><i class="ti ti-tag"></i> tema</div>
@@ -349,47 +337,26 @@ hr { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
             <div class="chip"><i class="ti ti-ghost"></i> anónimo</div>
           </div>
         </div>
-        <div class="filters" id="category-filters">
-          <div class="ftag active" onclick="filterCategory(null, this)">Todos</div>
-        </div>
-        <div id="threads-list"><div class="loading"><i class="ti ti-loader"></i>Cargando debates...</div></div>
+        <div class="filters" id="cat-filters"><div class="ftag active" onclick="filterCat(null,this)">Todos</div></div>
+        <div id="threads-list"><div class="loading"><i class="ti ti-loader"></i>Cargando...</div></div>
       </div>
       <div>
-        <div class="sw hot">
-          <div class="sw-label"><i class="ti ti-flame"></i> En llamas ahora</div>
-          <div id="hot-threads"><div class="sw-item"><i class="ti ti-loader"></i> cargando...</div></div>
-        </div>
-        <div class="sw members">
-          <div class="sw-label" style="color:var(--teal-600)"><i class="ti ti-circles"></i> Miembros del foro</div>
-          <div id="members-list" class="member-avatars"></div>
-        </div>
-        <div class="sw wiki-sw">
-          <div class="sw-label"><i class="ti ti-sparkles"></i> Wiki reciente · IA</div>
-          <div id="wiki-preview"><div class="sw-item"><i class="ti ti-loader"></i> cargando...</div></div>
-        </div>
-        <div class="sw" style="background:var(--bg);border:0.5px solid var(--border);">
-          <div class="sw-label" style="color:var(--text2)"><i class="ti ti-chart-bar"></i> Actividad reciente</div>
-          <div id="activity-feed"><div class="sw-item" style="color:var(--text3)"><i class="ti ti-loader" style="color:var(--text3)"></i> cargando...</div></div>
-        </div>
+        <div class="sw hot"><div class="sw-label"><i class="ti ti-flame"></i> En llamas</div><div id="hot-threads"></div></div>
+        <div class="sw members"><div class="sw-label" style="color:var(--t600)"><i class="ti ti-circles"></i> Miembros</div><div id="mlist" class="mavs"></div></div>
+        <div class="sw wiki-sw"><div class="sw-label"><i class="ti ti-sparkles"></i> Wiki · IA</div><div id="wiki-prev"></div></div>
+        <div class="sw" style="background:var(--bg);border:0.5px solid var(--br)"><div class="sw-label" style="color:var(--tx2)"><i class="ti ti-activity"></i> Actividad</div><div id="act-feed"></div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- THREAD DETAIL PAGE -->
-<div id="page-thread" class="page">
-  <div class="container" style="max-width:800px">
-    <div id="thread-detail-content"></div>
-  </div>
-</div>
+<!-- THREAD DETAIL -->
+<div id="pg-thread" class="page"><div class="container" style="max-width:780px"><div id="thread-content"></div></div></div>
 
-<!-- BIBLIOTECA PAGE -->
-<div id="page-biblioteca" class="page">
+<!-- BIBLIOTECA -->
+<div id="pg-biblioteca" class="page">
   <div class="container">
-    <div class="section-header">
-      <div class="section-title">Biblioteca virtual</div>
-      <button class="btn btn-primary btn-sm" onclick="openAddLibrary()"><i class="ti ti-plus"></i> Agregar recurso</button>
-    </div>
+    <div class="sh"><div class="st">Biblioteca virtual</div><button class="btn btn-p btn-sm" onclick="openLibModal()"><i class="ti ti-plus"></i> Agregar</button></div>
     <div class="filters">
       <div class="ftag active" onclick="filterLib(null,this)">Todo</div>
       <div class="ftag" onclick="filterLib('Neurobiología',this)">Neurobiología</div>
@@ -398,768 +365,372 @@ hr { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
       <div class="ftag" onclick="filterLib('Desarrollo',this)">Desarrollo</div>
       <div class="ftag" onclick="filterLib('Teoría',this)">Teoría</div>
     </div>
-    <div id="library-grid" class="lib-grid"><div class="loading"><i class="ti ti-loader"></i>Cargando biblioteca...</div></div>
+    <div id="lib-grid" class="lib-grid"><div class="loading"><i class="ti ti-loader"></i>Cargando...</div></div>
   </div>
 </div>
 
-<!-- VIDEOTECA PAGE -->
-<div id="page-videoteca" class="page">
+<!-- VIDEOTECA -->
+<div id="pg-videoteca" class="page">
   <div class="container">
-    <div class="section-header">
-      <div class="section-title">Videoteca</div>
-      <button class="btn btn-primary btn-sm" onclick="openAddVideo()"><i class="ti ti-plus"></i> Agregar video</button>
-    </div>
-    <div id="video-grid" class="vid-grid"><div class="loading"><i class="ti ti-loader"></i>Cargando videos...</div></div>
+    <div class="sh"><div class="st">Videoteca</div><button class="btn btn-p btn-sm" onclick="openVidModal()"><i class="ti ti-plus"></i> Agregar</button></div>
+    <div id="vid-grid" class="vg"><div class="loading"><i class="ti ti-loader"></i>Cargando...</div></div>
   </div>
 </div>
 
-<!-- VIDEO PLAYER PAGE -->
-<div id="page-video-player" class="page">
-  <div class="container" style="max-width:800px">
-    <button class="back-btn" onclick="navigate('videoteca')" style="color:var(--text2);margin-bottom:12px;"><i class="ti ti-arrow-left"></i> Volver</button>
-    <div id="video-player-content"></div>
+<!-- VIDEO PLAYER -->
+<div id="pg-vplayer" class="page">
+  <div class="container" style="max-width:780px">
+    <button class="back-btn" onclick="nav('videoteca')" style="color:var(--tx2);margin-bottom:12px"><i class="ti ti-arrow-left"></i> Volver</button>
+    <div id="vplayer-content"></div>
   </div>
 </div>
 
-<!-- WIKI PAGE -->
-<div id="page-wiki" class="page">
+<!-- WIKI -->
+<div id="pg-wiki" class="page">
   <div class="container">
-    <div class="section-header">
-      <div class="section-title">Wiki de clases</div>
-      <button class="btn btn-primary btn-sm" onclick="openNewWikiPage()"><i class="ti ti-plus"></i> Nueva clase</button>
-    </div>
-    <div id="wiki-list"><div class="loading"><i class="ti ti-loader"></i>Cargando wiki...</div></div>
+    <div class="sh"><div class="st">Wiki de clases</div><button class="btn btn-p btn-sm" onclick="openWikiNew()"><i class="ti ti-plus"></i> Nueva clase</button></div>
+    <div id="wiki-list"><div class="loading"><i class="ti ti-loader"></i>Cargando...</div></div>
   </div>
 </div>
 
-<!-- WIKI DETAIL PAGE -->
-<div id="page-wiki-detail" class="page">
-  <div class="container" style="max-width:800px">
-    <div id="wiki-detail-content"></div>
-  </div>
-</div>
+<!-- WIKI DETAIL -->
+<div id="pg-wiki-detail" class="page"><div class="container" style="max-width:780px"><div id="wiki-detail"></div></div></div>
 
-</div><!-- /main-app -->
+</div><!-- /app -->
 
 <!-- MODALS -->
-
-<!-- NEW THREAD MODAL -->
-<div class="modal-overlay" id="modal-thread">
+<div class="mo" id="mo-thread">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Nuevo debate</h2>
-      <button class="modal-close" onclick="closeModal('modal-thread')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Título del hilo</label>
-        <input class="form-input" id="nt-title" placeholder="Una pregunta que provoque debate...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Contenido</label>
-        <textarea class="form-input form-textarea" id="nt-body" placeholder="Desarrolla tu argumento, cita fuentes, plantea la pregunta..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Categoría</label>
-        <select class="form-select" id="nt-category"></select>
-      </div>
-      <div class="form-footer">
-        <label class="anon-check">
-          <input type="checkbox" id="nt-anon"> Publicar anónimamente
-        </label>
-        <button class="btn btn-primary" onclick="submitThread()">Publicar hilo</button>
-      </div>
+    <div class="mh"><h2>Nuevo debate</h2><button class="mc-btn" onclick="closeM('mo-thread')"><i class="ti ti-x"></i></button></div>
+    <div class="mb">
+      <div class="fg"><label class="fl">Título</label><input class="fi" id="nt-t" placeholder="Una pregunta que provoque debate..."></div>
+      <div class="fg"><label class="fl">Contenido</label><textarea class="fi fta" id="nt-b" placeholder="Desarrolla tu argumento, cita fuentes..."></textarea></div>
+      <div class="fg"><label class="fl">Categoría</label><select class="fsel" id="nt-c"></select></div>
+      <div class="mfoot"><label class="ach"><input type="checkbox" id="nt-a"> Anónimo</label><button class="btn btn-p" onclick="submitThread()">Publicar</button></div>
     </div>
   </div>
 </div>
 
-<!-- ADD LIBRARY MODAL -->
-<div class="modal-overlay" id="modal-library">
+<div class="mo" id="mo-lib">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Agregar a biblioteca</h2>
-      <button class="modal-close" onclick="closeModal('modal-library')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Título del libro / artículo</label>
-        <input class="form-input" id="lib-title" placeholder="Ej: El error de Descartes — Antonio Damasio">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Autor</label>
-        <input class="form-input" id="lib-author" placeholder="Autor o autores">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Reseña breve (opcional)</label>
-        <textarea class="form-input form-textarea" id="lib-desc" placeholder="¿Por qué lo recomiendas? ¿Qué aporta al curso?" style="min-height:70px"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">URL del PDF / recurso</label>
-        <input class="form-input" id="lib-url" placeholder="https://...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Categoría</label>
-        <select class="form-select" id="lib-cat">
-          <option>Neurobiología</option><option>Psicoanálisis</option>
-          <option>Cognición</option><option>Desarrollo</option>
-          <option>Teoría</option><option>Clínica</option><option>Otro</option>
-        </select>
-      </div>
-      <div class="form-footer">
-        <label class="anon-check"><input type="checkbox" id="lib-anon"> Subir anónimamente</label>
-        <button class="btn btn-primary" onclick="submitLibrary()">Agregar</button>
-      </div>
+    <div class="mh"><h2>Agregar a biblioteca</h2><button class="mc-btn" onclick="closeM('mo-lib')"><i class="ti ti-x"></i></button></div>
+    <div class="mb">
+      <div class="fg"><label class="fl">Título</label><input class="fi" id="lt" placeholder="El error de Descartes — Damasio"></div>
+      <div class="fg"><label class="fl">Autor</label><input class="fi" id="la" placeholder="Autor o autores"></div>
+      <div class="fg"><label class="fl">Reseña</label><textarea class="fi fta" id="ld" placeholder="¿Por qué lo recomiendas?" style="min-height:65px"></textarea></div>
+      <div class="fg"><label class="fl">URL del PDF</label><input class="fi" id="lu" placeholder="https://..."></div>
+      <div class="fg"><label class="fl">Categoría</label><select class="fsel" id="lc"><option>Neurobiología</option><option>Psicoanálisis</option><option>Cognición</option><option>Desarrollo</option><option>Teoría</option><option>Clínica</option><option>Otro</option></select></div>
+      <div class="mfoot"><label class="ach"><input type="checkbox" id="la2"> Anónimo</label><button class="btn btn-p" onclick="submitLib()">Agregar</button></div>
     </div>
   </div>
 </div>
 
-<!-- ADD VIDEO MODAL -->
-<div class="modal-overlay" id="modal-video">
+<div class="mo" id="mo-vid">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Agregar video</h2>
-      <button class="modal-close" onclick="closeModal('modal-video')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">URL de YouTube</label>
-        <input class="form-input" id="vid-url" placeholder="https://www.youtube.com/watch?v=...">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Título</label>
-        <input class="form-input" id="vid-title" placeholder="Nombre del video o conferencia">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Descripción (opcional)</label>
-        <textarea class="form-input form-textarea" id="vid-desc" placeholder="¿Por qué es relevante para el curso?" style="min-height:70px"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Categoría</label>
-        <select class="form-select" id="vid-cat">
-          <option>Neurobiología</option><option>Psicoanálisis</option>
-          <option>Cognición</option><option>Desarrollo</option>
-          <option>Conferencia</option><option>Documental</option><option>Otro</option>
-        </select>
-      </div>
-      <div class="form-footer">
-        <label class="anon-check"><input type="checkbox" id="vid-anon"> Agregar anónimamente</label>
-        <button class="btn btn-primary" onclick="submitVideo()">Agregar video</button>
-      </div>
+    <div class="mh"><h2>Agregar video</h2><button class="mc-btn" onclick="closeM('mo-vid')"><i class="ti ti-x"></i></button></div>
+    <div class="mb">
+      <div class="fg"><label class="fl">URL de YouTube</label><input class="fi" id="vu" placeholder="https://youtube.com/watch?v=..."></div>
+      <div class="fg"><label class="fl">Título</label><input class="fi" id="vt2" placeholder="Nombre del video"></div>
+      <div class="fg"><label class="fl">Descripción</label><textarea class="fi fta" id="vd" placeholder="¿Por qué es relevante?" style="min-height:65px"></textarea></div>
+      <div class="fg"><label class="fl">Categoría</label><select class="fsel" id="vc2"><option>Neurobiología</option><option>Psicoanálisis</option><option>Cognición</option><option>Desarrollo</option><option>Conferencia</option><option>Documental</option><option>Otro</option></select></div>
+      <div class="mfoot"><label class="ach"><input type="checkbox" id="va"> Anónimo</label><button class="btn btn-p" onclick="submitVid()">Agregar</button></div>
     </div>
   </div>
 </div>
 
-<!-- NEW WIKI PAGE MODAL -->
-<div class="modal-overlay" id="modal-wiki-new">
+<div class="mo" id="mo-wiki-new">
   <div class="modal">
-    <div class="modal-header">
-      <h2>Nueva página wiki</h2>
-      <button class="modal-close" onclick="closeModal('modal-wiki-new')"><i class="ti ti-x"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Nombre de la clase</label>
-        <input class="form-input" id="wiki-name" placeholder="Ej: Procesos atencionales y psicopatología">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Número de clase</label>
-        <input class="form-input" type="number" id="wiki-num" placeholder="Ej: 8">
-      </div>
-      <div class="form-footer">
-        <span></span>
-        <button class="btn btn-primary" onclick="submitWikiPage()">Crear página</button>
-      </div>
+    <div class="mh"><h2>Nueva página wiki</h2><button class="mc-btn" onclick="closeM('mo-wiki-new')"><i class="ti ti-x"></i></button></div>
+    <div class="mb">
+      <div class="fg"><label class="fl">Nombre de la clase</label><input class="fi" id="wn" placeholder="Procesos atencionales y psicopatología"></div>
+      <div class="fg"><label class="fl">Número de clase</label><input class="fi" type="number" id="wnum" placeholder="8"></div>
+      <div class="mfoot"><span></span><button class="btn btn-p" onclick="submitWikiPage()">Crear</button></div>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"><i class="ti ti-check"></i> <span id="toast-msg"></span></div>
+<div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg"></span></div>
 
 <script>
-const SUPABASE_URL = 'https://nfzbsogsovhxljbzakbs.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_lv-K2d-7Xe6pNg82XUt1mQ_n6P8ZLhA';
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+const SB_URL='https://nfzbsogsovhxljbzakbs.supabase.co';
+const SB_KEY='sb_publishable_lv-K2d-7Xe6pNg82XUt1mQ_n6P8ZLhA';
+const GEMINI_KEY='AQ.Ab8RN6KBovr_Ck1DqoxE9ahMbw0F6nKVaZKSdKmOxWROfPfTYA';
+const {createClient}=supabase;
+const sb=createClient(SB_URL,SB_KEY);
 
-let currentUser = null;
-let currentProfile = null;
-let isAnon = false;
-let activeCategory = null;
-let categories = [];
+let user=null,profile=null,isAnon=false,activeCat=null,libCat=null;
+let cats=[],notifs=[],unreadNotifs=0;
+const ADMIN_EMAILS=['lorenzohugo33@gmail.com'];
 
-// =============================================
-// INIT
-// =============================================
-async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    await loadProfile();
-    showApp();
-  } else {
-    showAuth();
+// ── INIT ──
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session){user=session.user;await loadProfile();showApp();}
+  else showAuth();
+  sb.auth.onAuthStateChange(async(e,s)=>{
+    if(e==='SIGNED_IN'){user=s.user;await loadProfile();showApp();}
+    else if(e==='SIGNED_OUT'){user=null;profile=null;showAuth();}
+  });
+}
+
+async function loadProfile(){
+  const{data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  profile=data;
+  if(data){
+    document.getElementById('uinit').textContent=data.avatar_initials||data.username?.slice(0,2).toUpperCase()||'??';
+    document.getElementById('cav-compose').textContent=data.avatar_initials||'??';
   }
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN') {
-      currentUser = session.user;
-      await loadProfile();
-      showApp();
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null; currentProfile = null;
-      showAuth();
+  await loadNotifs();
+}
+
+function isAdmin(){return ADMIN_EMAILS.includes(user?.email);}
+
+function showApp(){document.getElementById('auth-page').style.display='none';document.getElementById('app').style.display='block';loadCats();loadDebates();loadSidebar();subscribeRealtime();}
+function showAuth(){document.getElementById('auth-page').style.display='flex';document.getElementById('app').style.display='none';}
+
+// ── REALTIME ──
+function subscribeRealtime(){
+  sb.channel('public:replies').on('postgres_changes',{event:'INSERT',schema:'public',table:'replies'},async(payload)=>{
+    const{data:t}=await sb.from('threads').select('author_id,title').eq('id',payload.new.thread_id).single();
+    if(t&&t.author_id===user.id&&payload.new.author_id!==user.id){
+      unreadNotifs++;
+      notifs.unshift({text:`Nueva respuesta en: ${t.title.slice(0,40)}`,time:payload.new.created_at,thread_id:payload.new.thread_id});
+      document.getElementById('ndot').classList.add('show');
+      showToast('Nueva respuesta en tu hilo','ok');
+      if(document.getElementById('pg-debates').classList.contains('active'))loadDebates();
     }
-  });
+  }).subscribe();
+  sb.channel('public:threads').on('postgres_changes',{event:'INSERT',schema:'public',table:'threads'},()=>{
+    if(document.getElementById('pg-debates').classList.contains('active'))loadDebates();
+  }).subscribe();
 }
 
-async function loadProfile() {
-  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  currentProfile = data;
-  if (data) {
-    document.getElementById('user-initials').textContent = data.avatar_initials || data.username?.slice(0,2).toUpperCase();
-    document.getElementById('compose-av').textContent = data.avatar_initials || data.username?.slice(0,2).toUpperCase();
+async function loadNotifs(){
+  const{data}=await sb.from('replies').select('thread_id,created_at,threads(title,author_id)').neq('author_id',user.id).order('created_at',{ascending:false}).limit(10);
+  notifs=(data||[]).filter(r=>r.threads?.author_id===user.id).map(r=>({text:`Respuesta en: ${r.threads.title?.slice(0,40)}`,time:r.created_at,thread_id:r.thread_id}));
+}
+
+function toggleNotifs(){
+  const p=document.getElementById('notif-panel');
+  p.classList.toggle('show');
+  if(p.classList.contains('show')){
+    unreadNotifs=0;document.getElementById('ndot').classList.remove('show');
+    p.innerHTML=notifs.length?`<div style="font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:8px">Notificaciones</div>`+notifs.map(n=>`<div class="notif-item" onclick="openThreadById('${n.thread_id}')"><i class="ti ti-message"></i><span>${n.text}</span><span style="font-size:10px;color:var(--tx3);margin-left:auto;white-space:nowrap">${timeAgo(n.time)}</span></div>`).join(''):
+    `<div style="font-size:13px;color:var(--tx3);text-align:center;padding:8px">Sin notificaciones</div>`;
+    if(!notifs.length)setTimeout(()=>p.classList.remove('show'),2000);
   }
+  if(!p.classList.contains('show'))doLogout_btn();
 }
 
-function showApp() {
-  document.getElementById('auth-page').style.display = 'none';
-  document.getElementById('main-app').style.display = 'block';
-  loadCategories();
-  loadDebates();
-  loadSidebar();
+function doLogout_btn(){/* avatar click = notifs only */}
+
+// ── AUTH ──
+function switchTab(t,el){document.querySelectorAll('.atab').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('tab-login').style.display=t==='login'?'block':'none';document.getElementById('tab-reg').style.display=t==='reg'?'block':'none';}
+async function doLogin(){const e=document.getElementById('le').value,p=document.getElementById('lp').value,m=document.getElementById('lmsg');m.textContent='Entrando...';m.className='amsg';const{error}=await sb.auth.signInWithPassword({email:e,password:p});if(error){m.textContent=error.message;m.className='amsg err';}}
+async function doReg(){const u=document.getElementById('ru').value.trim(),e=document.getElementById('re').value.trim(),p=document.getElementById('rp').value,t=document.getElementById('rt').value,m=document.getElementById('rmsg');if(!u||!e||!p){m.textContent='Completa todos los campos';m.className='amsg err';return;}m.textContent='Creando cuenta...';m.className='amsg';const{error}=await sb.auth.signUp({email:e,password:p,options:{data:{username:u,trimestre:t}}});if(error){m.textContent=error.message;m.className='amsg err';}else{m.textContent='¡Cuenta creada! Iniciando sesión...';m.className='amsg ok';}}
+
+// ── NAV ──
+function nav(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tnav,.mnav-item').forEach(n=>n.classList.remove('active'));
+  const pm={debates:'pg-debates',biblioteca:'pg-biblioteca',videoteca:'pg-videoteca',wiki:'pg-wiki',thread:'pg-thread','vplayer':'pg-vplayer','wiki-detail':'pg-wiki-detail'};
+  if(pm[page])document.getElementById(pm[page]).classList.add('active');
+  ['tn-','mn-'].forEach(pre=>{const el=document.getElementById(pre+page);if(el)el.classList.add('active');});
+  if(page==='biblioteca')loadLib();
+  if(page==='videoteca')loadVids();
+  if(page==='wiki')loadWiki();
+  document.getElementById('search-res').classList.remove('show');
 }
 
-function showAuth() {
-  document.getElementById('auth-page').style.display = 'flex';
-  document.getElementById('main-app').style.display = 'none';
+// ── ANON ──
+function toggleAnon(){isAnon=!isAnon;const b=document.getElementById('anon-btn'),l=document.getElementById('anon-lbl'),a=document.getElementById('cav-compose'),ci=document.getElementById('ci');if(isAnon){b.classList.add('on');l.textContent='activo';a.innerHTML='<i class="ti ti-ghost" style="font-size:14px"></i>';ci.querySelector('.cav').classList.add('anon');}else{b.classList.remove('on');l.textContent='anónimo';a.textContent=profile?.avatar_initials||'??';ci.querySelector('.cav').classList.remove('anon');}}
+
+// ── SEARCH ──
+async function doSearch(q){const r=document.getElementById('search-res');if(!q||q.length<2){r.classList.remove('show');return;}r.classList.add('show');r.innerHTML='<div class="sr-item"><i class="ti ti-loader" style="animation:spin 1s linear infinite"></i>Buscando...</div>';
+const[{data:th},{data:lb},{data:wk}]=await Promise.all([
+  sb.from('threads').select('id,title,category_id').ilike('title','%'+q+'%').limit(4),
+  sb.from('library').select('id,title,author').ilike('title','%'+q+'%').limit(3),
+  sb.from('wiki_pages').select('id,class_name,class_number').ilike('class_name','%'+q+'%').limit(3)
+]);
+let html='';
+(th||[]).forEach(t=>{html+=`<div class="sr-item" onclick="openThreadById('${t.id}');document.getElementById('search-res').classList.remove('show')"><i class="ti ti-messages"></i>${t.title.slice(0,50)}<span class="sr-tag">Debate</span></div>`;});
+(lb||[]).forEach(l=>{html+=`<div class="sr-item" onclick="nav('biblioteca');document.getElementById('search-res').classList.remove('show')"><i class="ti ti-book"></i>${l.title.slice(0,50)}<span class="sr-tag">Biblioteca</span></div>`;});
+(wk||[]).forEach(w=>{html+=`<div class="sr-item" onclick="openWikiDetail('${w.id}');document.getElementById('search-res').classList.remove('show')"><i class="ti ti-notes"></i>Clase ${w.class_number} — ${w.class_name.slice(0,35)}<span class="sr-tag">Wiki</span></div>`;});
+r.innerHTML=html||'<div class="sr-item" style="color:var(--tx3)">Sin resultados</div>';}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.getElementById('search-res').classList.remove('show');});
+
+// ── CATS ──
+async function loadCats(){const{data}=await sb.from('categories').select('*').order('id');cats=data||[];const f=document.getElementById('cat-filters');f.innerHTML='<div class="ftag active" onclick="filterCat(null,this)">Todos</div>';const s=document.getElementById('nt-c');s.innerHTML='';cats.forEach(c=>{f.innerHTML+=`<div class="ftag" onclick="filterCat(${c.id},this)">${c.name}</div>`;s.innerHTML+=`<option value="${c.id}">${c.name}</option>`;});}
+function filterCat(id,el){document.querySelectorAll('#cat-filters .ftag').forEach(f=>f.classList.remove('active'));el.classList.add('active');activeCat=id;loadDebates();}
+
+// ── DEBATES ──
+async function loadDebates(){const l=document.getElementById('threads-list');l.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';let q=sb.from('threads').select('*,profiles(username,avatar_initials),categories(name,color,text_color)').order('created_at',{ascending:false});if(activeCat)q=q.eq('category_id',activeCat);const{data}=await q;
+if(!data?.length){l.innerHTML='<div class="empty"><i class="ti ti-messages"></i><p>Sin hilos aún. ¡Sé el primero!</p></div>';return;}
+document.getElementById('dc').textContent=data.length;
+const counts=await Promise.all(data.map(t=>sb.from('replies').select('id',{count:'exact',head:true}).eq('thread_id',t.id)));
+l.innerHTML=data.map((t,i)=>threadCard(t,counts[i].count||0)).join('');}
+
+function threadCard(t,rc){
+  const cat=t.categories;const ps=cat?`background:${cat.color};color:${cat.text_color}`:''
+  const av=t.is_anonymous?'<i class="ti ti-ghost" style="font-size:14px"></i>':(t.profiles?.avatar_initials||'??');
+  const avc=t.is_anonymous?'tav anon':'tav';const avs=t.is_anonymous?'':'background:var(--p50);color:var(--p600)';
+  const who=t.is_anonymous?'<span class="ap">anónimo</span>':`<span>${t.profiles?.username||'usuario'}</span>`;
+  const prev=t.body.length>160?t.body.slice(0,160)+'...':t.body;
+  const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="margin-left:auto;font-size:10px" onclick="event.stopPropagation();deletePost('threads','${t.id}')">Eliminar</button>`:'';
+  return`<div class="tc" onclick="openThreadById('${t.id}')">
+    <div class="tc-body"><div class="${avc}" style="${avs}">${av}</div>
+    <div style="flex:1"><div class="tc-who">${who}·<span>${timeAgo(t.created_at)}</span></div>
+    <div class="tc-title">${t.title}</div><div class="tc-prev">${prev}</div></div></div>
+    <div class="tc-foot"><div class="tc-stat"><i class="ti ti-message"></i>${rc}</div>
+    <button class="like-btn" onclick="event.stopPropagation();likeIt('${t.id}','thread',this)"><i class="ti ti-heart"></i>${t.likes}</button>
+    ${cat?`<span class="tpill" style="${ps}">${cat.name}</span>`:''}${adm}</div></div>`;
 }
 
-// =============================================
-// AUTH
-// =============================================
-function switchAuthTab(tab) {
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
-}
+async function openThreadById(id){nav('thread');const c=document.getElementById('thread-content');c.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+const[{data:t},{data:reps}]=await Promise.all([sb.from('threads').select('*,profiles(username,avatar_initials),categories(name,color,text_color)').eq('id',id).single(),sb.from('replies').select('*,profiles(username,avatar_initials)').eq('thread_id',id).order('created_at')]);
+if(!t){c.innerHTML='<div class="empty"><i class="ti ti-alert-circle"></i><p>No encontrado</p></div>';return;}
+const cat=t.categories;const ps=cat?`background:${cat.color};color:${cat.text_color};font-size:11px`:'';
+const who=t.is_anonymous?'<span class="ap">anónimo</span>':`<strong>${t.profiles?.username}</strong>`;
+const adm=isAdmin()?`<button class="btn btn-danger btn-sm" onclick="deletePost('threads','${t.id}');nav('debates')">Eliminar hilo</button>`:'';
+c.innerHTML=`<div style="background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);margin-bottom:14px;overflow:hidden">
+  <div class="tdh"><button class="back-btn" onclick="nav('debates')"><i class="ti ti-arrow-left"></i> Debates</button>
+  <div class="td-title">${t.title}</div>
+  <div class="td-meta">${who}·<span>${timeAgo(t.created_at)}</span>${cat?`<span class="tpill" style="${ps}">${cat.name}</span>`:''}</div></div>
+  <div style="padding:14px 16px;font-size:14px;line-height:1.8;color:var(--tx)">${t.body.replace(/\n/g,'<br>')}</div>
+  <div style="padding:7px 15px;border-top:0.5px solid var(--br);display:flex;gap:10px;background:var(--bg2);align-items:center">
+    <button class="like-btn" onclick="likeIt('${t.id}','thread',this)"><i class="ti ti-heart"></i>${t.likes} me gusta</button>${adm}</div></div>
+<div style="font-size:13px;font-weight:500;color:var(--tx2);margin-bottom:9px">${reps?.length||0} respuestas</div>
+<div id="rlist">${(reps||[]).map(r=>replyCard(r)).join('')}</div>
+<div style="background:var(--bg);border:0.5px solid var(--br);border-radius:var(--rl);padding:13px 15px;margin-top:13px">
+  <div style="font-size:13px;font-weight:500;margin-bottom:9px">Tu respuesta</div>
+  <textarea class="fi fta" id="rb" placeholder="Argumenta con evidencia, cita autores..." style="min-height:75px;margin-bottom:9px"></textarea>
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <label class="ach"><input type="checkbox" id="ra" ${isAnon?'checked':''}> Anónimo</label>
+    <button class="btn btn-p btn-sm" onclick="submitReply('${id}')">Responder</button></div></div>`;}
 
-async function doLogin() {
-  const email = document.getElementById('login-email').value;
-  const pass = document.getElementById('login-pass').value;
-  const msg = document.getElementById('login-msg');
-  msg.textContent = 'Iniciando sesión...';
-  msg.className = 'auth-msg';
-  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
-}
+function replyCard(r){const av=r.is_anonymous?'<i class="ti ti-ghost" style="font-size:13px"></i>':(r.profiles?.avatar_initials||'??');const avc=r.is_anonymous?'tav anon':'tav';const avs=r.is_anonymous?'':'background:var(--t50);color:var(--t600)';const who=r.is_anonymous?'<span class="ap">anónimo</span>':`<strong>${r.profiles?.username}</strong>`;const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="deletePost('replies','${r.id}');openThreadById('${r.thread_id}')">Eliminar</button>`:'';
+return`<div class="rc"><div class="${avc}" style="${avs};width:30px;height:30px;font-size:10px">${av}</div><div style="flex:1"><div class="rm">${who}·${timeAgo(r.created_at)}</div><div class="rb">${r.body.replace(/\n/g,'<br>')}</div><div style="margin-top:5px;display:flex;gap:8px;align-items:center"><button class="like-btn" onclick="likeIt('${r.id}','reply',this)"><i class="ti ti-heart"></i>${r.likes}</button>${adm}</div></div></div>`;}
 
-async function doRegister() {
-  const username = document.getElementById('reg-username').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const pass = document.getElementById('reg-pass').value;
-  const trimestre = document.getElementById('reg-trimestre').value;
-  const msg = document.getElementById('reg-msg');
-  if (!username || !email || !pass) { msg.textContent = 'Completa todos los campos'; msg.className = 'auth-msg error'; return; }
-  msg.textContent = 'Creando cuenta...'; msg.className = 'auth-msg';
-  const { error } = await sb.auth.signUp({ email, password: pass, options: { data: { username, trimestre } } });
-  if (error) { msg.textContent = error.message; msg.className = 'auth-msg error'; }
-  else { msg.textContent = 'Revisa tu correo para confirmar la cuenta'; msg.className = 'auth-msg success'; }
-}
+async function submitReply(tid){const b=document.getElementById('rb').value.trim();const a=document.getElementById('ra').checked;if(!b){showToast('Escribe algo antes','err');return;}const{error}=await sb.from('replies').insert({thread_id:tid,author_id:user.id,body:b,is_anonymous:a});if(error){showToast('Error','err');return;}showToast('Respuesta publicada','ok');openThreadById(tid);}
 
-async function doLogout() {
-  if (!confirm('¿Cerrar sesión?')) return;
-  await sb.auth.signOut();
-}
+// ── NEW THREAD ──
+function openThread(){document.getElementById('nt-a').checked=isAnon;document.getElementById('mo-thread').classList.add('open');}
+async function submitThread(){const t=document.getElementById('nt-t').value.trim(),b=document.getElementById('nt-b').value.trim(),c=document.getElementById('nt-c').value,a=document.getElementById('nt-a').checked;if(!t||!b){showToast('Título y contenido obligatorios','err');return;}const{error}=await sb.from('threads').insert({title:t,body:b,category_id:parseInt(c),author_id:user.id,is_anonymous:a});if(error){showToast('Error al publicar','err');return;}closeM('mo-thread');document.getElementById('nt-t').value='';document.getElementById('nt-b').value='';showToast('Hilo publicado','ok');loadDebates();loadSidebar();}
 
-// =============================================
-// NAVIGATION
-// =============================================
-function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tnav').forEach(n => n.classList.remove('active'));
-  const pageMap = { debates: 'page-debates', biblioteca: 'page-biblioteca', videoteca: 'page-videoteca', wiki: 'page-wiki', thread: 'page-thread', 'video-player': 'page-video-player', 'wiki-detail': 'page-wiki-detail' };
-  const navMap = { debates: 'nav-debates', biblioteca: 'nav-biblioteca', videoteca: 'nav-videoteca', wiki: 'nav-wiki' };
-  if (pageMap[page]) document.getElementById(pageMap[page]).classList.add('active');
-  if (navMap[page]) document.getElementById(navMap[page]).classList.add('active');
-  if (page === 'biblioteca') loadLibrary();
-  if (page === 'videoteca') loadVideos();
-  if (page === 'wiki') loadWiki();
-}
+// ── ADMIN DELETE ──
+async function deletePost(table,id){if(!isAdmin()||!confirm('¿Eliminar este contenido?'))return;const{error}=await sb.from(table).delete().eq('id',id);if(error){showToast('Error al eliminar','err');return;}showToast('Eliminado','ok');if(table==='threads'){loadDebates();}else{loadDebates();}}
 
-// =============================================
-// ANON TOGGLE
-// =============================================
-function toggleAnon() {
-  isAnon = !isAnon;
-  const btn = document.getElementById('anon-toggle');
-  const lbl = document.getElementById('anon-label');
-  const av = document.getElementById('compose-av');
-  const ci = document.getElementById('compose-inner');
-  if (isAnon) { btn.classList.add('on'); lbl.textContent = 'anónimo activo'; av.innerHTML = '<i class="ti ti-ghost" style="font-size:14px"></i>'; ci.classList.add('anon-mode'); }
-  else { btn.classList.remove('on'); lbl.textContent = 'modo anónimo'; av.textContent = currentProfile?.avatar_initials || ''; ci.classList.remove('anon-mode'); }
-}
+// ── LIKES ──
+async function likeIt(id,type,btn){const{error}=await sb.from('likes').insert({user_id:user.id,target_id:id,target_type:type});if(error)return;const cur=parseInt(btn.textContent.match(/\d+/)?.[0]||0);await sb.from(type==='thread'?'threads':'replies').update({likes:cur+1}).eq('id',id);btn.classList.add('liked');btn.innerHTML=`<i class="ti ti-heart"></i>${cur+1}`;}
 
-// =============================================
-// CATEGORIES
-// =============================================
-async function loadCategories() {
-  const { data } = await sb.from('categories').select('*').order('id');
-  categories = data || [];
-  const filters = document.getElementById('category-filters');
-  filters.innerHTML = '<div class="ftag active" onclick="filterCategory(null,this)">Todos</div>';
-  const sel = document.getElementById('nt-category');
-  sel.innerHTML = '';
-  categories.forEach(c => {
-    filters.innerHTML += `<div class="ftag" onclick="filterCategory(${c.id},this)">${c.name}</div>`;
-    sel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-  });
-}
-
-function filterCategory(id, el) {
-  document.querySelectorAll('#category-filters .ftag').forEach(f => f.classList.remove('active'));
-  el.classList.add('active');
-  activeCategory = id;
-  loadDebates();
-}
-
-// =============================================
-// DEBATES
-// =============================================
-async function loadDebates() {
-  const list = document.getElementById('threads-list');
-  list.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando debates...</div>';
-  let q = sb.from('threads').select('*, profiles(username,avatar_initials,avatar_color), categories(name,color,text_color)').order('created_at', { ascending: false });
-  if (activeCategory) q = q.eq('category_id', activeCategory);
-  const { data, error } = await q;
-  if (error || !data?.length) { list.innerHTML = '<div class="empty"><i class="ti ti-messages"></i><p>No hay hilos aún. ¡Sé el primero en debatir!</p></div>'; return; }
-  document.getElementById('debates-count').textContent = data.length;
-  list.innerHTML = data.map(t => threadCard(t)).join('');
-}
-
-function threadCard(t) {
-  const cat = t.categories;
-  const who = t.is_anonymous ? '<span class="anon-pill"><i class="ti ti-ghost" style="font-size:10px"></i> anónimo</span>' : `<span>${t.profiles?.username || 'usuario'}</span>`;
-  const av = t.is_anonymous ? '<i class="ti ti-ghost" style="font-size:15px"></i>' : (t.profiles?.avatar_initials || '??');
-  const avStyle = t.is_anonymous ? 'class="tc-av anon"' : `class="tc-av" style="background:var(--purple-50);color:var(--purple-600)"`;
-  const pillStyle = cat ? `background:${cat.color};color:${cat.text_color}` : 'background:var(--purple-50);color:var(--purple-600)';
-  const preview = t.body.length > 180 ? t.body.slice(0, 180) + '...' : t.body;
-  return `<div class="thread-card" onclick="openThread('${t.id}')">
-    <div class="tc-body">
-      <div ${avStyle}>${av}</div>
-      <div style="flex:1">
-        <div class="tc-meta">${who} · <span>${timeAgo(t.created_at)}</span></div>
-        <div class="tc-title">${t.title}</div>
-        <div class="tc-preview">${preview}</div>
-      </div>
-    </div>
-    <div class="tc-footer">
-      <div class="tc-stat"><i class="ti ti-message"></i> <span id="rc-${t.id}">...</span></div>
-      <button class="like-btn" onclick="event.stopPropagation();likeItem('${t.id}','thread',this)"><i class="ti ti-heart"></i> ${t.likes}</button>
-      <div class="tc-stat"><i class="ti ti-clock"></i> ${timeAgo(t.created_at)}</div>
-      ${cat ? `<span class="topic-pill" style="${pillStyle}">${cat.name}</span>` : ''}
-    </div>
-  </div>`;
-}
-
-async function openThread(id) {
-  navigate('thread');
-  const content = document.getElementById('thread-detail-content');
-  content.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
-  const [{ data: t }, { data: replies }] = await Promise.all([
-    sb.from('threads').select('*, profiles(username,avatar_initials), categories(name,color,text_color)').eq('id', id).single(),
-    sb.from('replies').select('*, profiles(username,avatar_initials)').eq('thread_id', id).order('created_at')
+// ── SIDEBAR ──
+async function loadSidebar(){
+  const[{data:hot},{data:members},{data:wikis},{data:thr},{data:lib}]=await Promise.all([
+    sb.from('threads').select('id,title,likes').order('likes',{ascending:false}).limit(3),
+    sb.from('profiles').select('username,avatar_initials').limit(8),
+    sb.from('wiki_pages').select('id,class_name,class_number').order('class_number',{ascending:false}).limit(3),
+    sb.from('threads').select('title,created_at,is_anonymous,profiles(username)').order('created_at',{ascending:false}).limit(3),
+    sb.from('library').select('title,created_at').order('created_at',{ascending:false}).limit(2)
   ]);
-  if (!t) { content.innerHTML = '<div class="empty"><i class="ti ti-alert-circle"></i><p>Hilo no encontrado</p></div>'; return; }
-  const cat = t.categories;
-  const pillStyle = cat ? `background:${cat.color};color:${cat.text_color}` : '';
-  const whoT = t.is_anonymous ? '<span class="anon-pill"><i class="ti ti-ghost" style="font-size:10px"></i> anónimo</span>' : `<strong>${t.profiles?.username}</strong>`;
-  content.innerHTML = `
-    <div class="card" style="margin-bottom:16px">
-      <div class="thread-detail-header">
-        <button class="back-btn" onclick="navigate('debates')"><i class="ti ti-arrow-left"></i> Volver a debates</button>
-        <div class="thread-detail-title">${t.title}</div>
-        <div class="thread-detail-meta">
-          <span>${whoT}</span>
-          <span>·</span>
-          <span>${timeAgo(t.created_at)}</span>
-          ${cat ? `<span class="topic-pill" style="${pillStyle};font-size:11px">${cat.name}</span>` : ''}
-        </div>
-      </div>
-      <div class="card-body" style="font-size:14px;line-height:1.75;color:var(--text)">${t.body.replace(/\n/g,'<br>')}</div>
-      <div style="padding:8px 16px;border-top:0.5px solid var(--border);display:flex;gap:12px;background:var(--bg2)">
-        <button class="like-btn" onclick="likeItem('${t.id}','thread',this)"><i class="ti ti-heart"></i> ${t.likes} me gusta</button>
-      </div>
-    </div>
-    <div style="font-size:13px;font-weight:500;color:var(--text2);margin-bottom:10px">${replies?.length || 0} respuestas</div>
-    <div id="replies-list">${(replies||[]).map(r => replyCard(r)).join('')}</div>
-    <div class="reply-compose">
-      <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:10px">Tu respuesta</div>
-      <textarea class="form-input form-textarea" id="reply-body" placeholder="Argumenta con evidencia, cita autores, comparte tu perspectiva..." style="min-height:80px;margin-bottom:10px"></textarea>
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <label class="anon-check"><input type="checkbox" id="reply-anon" ${isAnon?'checked':''}> Responder anónimamente</label>
-        <button class="btn btn-primary btn-sm" onclick="submitReply('${t.id}')">Responder</button>
-      </div>
-    </div>`;
-}
+  const hEl=document.getElementById('hot-threads');hEl.innerHTML=hot?.length?hot.map(t=>`<div class="sw-item" onclick="openThreadById('${t.id}')" style="cursor:pointer"><i class="ti ti-arrow-up-right"></i>${t.title.slice(0,45)}${t.title.length>45?'...':''}</div>`).join(''):'<div class="sw-item"><i class="ti ti-zzz"></i>Sin actividad</div>';
+  const cols=['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B','#FAECE7:#993C1D','#E6F1FB:#185FA5'];
+  const mEl=document.getElementById('mlist');mEl.innerHTML=members?.length?members.map((m,i)=>{const[bg,c]=cols[i%cols.length].split(':');return`<div class="mav" style="background:${bg};color:${c}" title="${m.username}">${m.avatar_initials||'??'}</div>`;}).join('')+`<span style="font-size:11px;color:var(--t600);margin-left:4px">${members.length} miembros</span>`:'<span style="font-size:12px;color:var(--tx3)">Sin miembros</span>';
+  const wEl=document.getElementById('wiki-prev');wEl.innerHTML=wikis?.length?wikis.map(w=>`<div class="sw-item" onclick="openWikiDetail('${w.id}')" style="cursor:pointer"><i class="ti ti-file-description"></i>Clase ${w.class_number||''} — ${w.class_name.slice(0,30)}${w.class_name.length>30?'...':''}</div>`).join(''):'<div class="sw-item"><i class="ti ti-sparkles"></i>Sin páginas aún</div>';
+  let acts=[];(thr||[]).forEach(t=>acts.push({time:t.created_at,text:`${t.is_anonymous?'Anónimo':t.profiles?.username||'Alguien'} publicó un hilo`,c:'#D85A30'}));(lib||[]).forEach(l=>acts.push({time:l.created_at,text:`Nuevo recurso: ${l.title?.slice(0,28)}`,c:'#1D9E75'}));acts.sort((a,b)=>new Date(b.time)-new Date(a.time));
+  document.getElementById('act-feed').innerHTML=acts.slice(0,5).map(a=>`<div class="sw-item"><div style="width:6px;height:6px;border-radius:50%;background:${a.c};flex-shrink:0"></div>${a.text}</div>`).join('')||'<div class="sw-item" style="color:var(--tx3)">Sin actividad</div>';}
 
-function replyCard(r) {
-  const av = r.is_anonymous ? '<i class="ti ti-ghost" style="font-size:14px"></i>' : (r.profiles?.avatar_initials || '??');
-  const avCls = r.is_anonymous ? 'tc-av anon' : 'tc-av';
-  const who = r.is_anonymous ? '<span class="anon-pill">anónimo</span>' : `<strong>${r.profiles?.username}</strong>`;
-  return `<div class="reply-card">
-    <div class="${avCls}" style="${r.is_anonymous?'':'background:var(--teal-50);color:var(--teal-600)'}">${av}</div>
-    <div style="flex:1">
-      <div class="reply-meta">${who} · ${timeAgo(r.created_at)}</div>
-      <div class="reply-body">${r.body.replace(/\n/g,'<br>')}</div>
-      <div style="margin-top:6px">
-        <button class="like-btn" onclick="likeItem('${r.id}','reply',this)"><i class="ti ti-heart"></i> ${r.likes}</button>
-      </div>
-    </div>
-  </div>`;
-}
+// ── LIBRARY ──
+function filterLib(cat,el){document.querySelectorAll('#pg-biblioteca .ftag').forEach(f=>f.classList.remove('active'));el.classList.add('active');libCat=cat;loadLib();}
+async function loadLib(){const g=document.getElementById('lib-grid');g.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';let q=sb.from('library').select('*,profiles(username)').order('created_at',{ascending:false});if(libCat)q=q.eq('category',libCat);const{data}=await q;
+if(!data?.length){g.innerHTML='<div class="empty"><i class="ti ti-book"></i><p>Biblioteca vacía. ¡Sube el primer recurso!</p></div>';return;}
+const adm=isAdmin();
+g.innerHTML=data.map(item=>`<div class="lc" onclick="${item.file_url?`window.open('${item.file_url}','_blank')`:'void(0)'}">
+  <div class="lcov"><i class="ti ti-file-type-pdf"></i></div>
+  <div class="li"><div class="lt">${item.title}</div>${item.author?`<div class="la">${item.author}</div>`:''} ${item.description?`<div class="ld">${item.description}</div>`:''}</div>
+  <div class="lf"><span class="lcat">${item.category||'General'}</span>
+  <button class="like-btn" onclick="event.stopPropagation();likeIt('${item.id}','library',this)"><i class="ti ti-heart"></i>${item.likes}</button>
+  ${item.file_url?'<span style="font-size:11px;color:var(--p600);margin-left:auto;display:flex;align-items:center;gap:2px"><i class="ti ti-download" style="font-size:12px"></i>PDF</span>':''}
+  ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteLib('${item.id}')">×</button>`:''}
+  </div></div>`).join('');}
 
-async function submitReply(threadId) {
-  const body = document.getElementById('reply-body').value.trim();
-  const anon = document.getElementById('reply-anon').checked;
-  if (!body) { showToast('Escribe algo antes de responder', 'error'); return; }
-  const { error } = await sb.from('replies').insert({ thread_id: threadId, author_id: currentUser.id, body, is_anonymous: anon });
-  if (error) { showToast('Error al enviar respuesta', 'error'); return; }
-  showToast('Respuesta publicada');
-  openThread(threadId);
-}
+async function deleteLib(id){if(!confirm('¿Eliminar?'))return;await sb.from('library').delete().eq('id',id);showToast('Eliminado','ok');loadLib();}
+function openLibModal(){document.getElementById('mo-lib').classList.add('open');}
+async function submitLib(){const t=document.getElementById('lt').value.trim(),a=document.getElementById('la').value.trim(),d=document.getElementById('ld').value.trim(),u=document.getElementById('lu').value.trim(),c=document.getElementById('lc').value,an=document.getElementById('la2').checked;if(!t){showToast('Título obligatorio','err');return;}const{error}=await sb.from('library').insert({title:t,author:a,description:d,file_url:u,category:c,uploaded_by:user.id,is_anonymous:an});if(error){showToast('Error','err');return;}closeM('mo-lib');['lt','la','ld','lu'].forEach(id=>document.getElementById(id).value='');showToast('Agregado','ok');loadLib();}
 
-// =============================================
-// NEW THREAD
-// =============================================
-function openNewThread() {
-  document.getElementById('nt-anon').checked = isAnon;
-  document.getElementById('modal-thread').classList.add('open');
-}
+// ── VIDEO ──
+function getYtId(url){const m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);return m?m[1]:null;}
+async function loadVids(){const g=document.getElementById('vid-grid');g.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';const{data}=await sb.from('videos').select('*').order('created_at',{ascending:false});
+if(!data?.length){g.innerHTML='<div class="empty"><i class="ti ti-player-play"></i><p>Videoteca vacía. ¡Agrega el primero!</p></div>';return;}
+const adm=isAdmin();
+g.innerHTML=data.map(v=>`<div class="vc" onclick="playVid('${v.id}')">
+  <div class="vt"><img src="https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg" alt="${v.title}" loading="lazy"><div class="vplay"><i class="ti ti-player-play"></i></div></div>
+  <div class="vi"><div class="vtit">${v.title}</div>${v.description?`<div class="vdesc">${v.description.slice(0,90)}${v.description.length>90?'...':''}</div>`:''}
+  <div style="margin-top:6px;display:flex;align-items:center;gap:7px">
+    <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--pk50);color:var(--pk600)">${v.category||'General'}</span>
+    <button class="like-btn" onclick="event.stopPropagation();likeIt('${v.id}','video',this)"><i class="ti ti-heart"></i>${v.likes}</button>
+    ${adm?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteVid('${v.id}')">×</button>`:''}
+  </div></div></div>`).join('');}
 
-async function submitThread() {
-  const title = document.getElementById('nt-title').value.trim();
-  const body = document.getElementById('nt-body').value.trim();
-  const cat = document.getElementById('nt-category').value;
-  const anon = document.getElementById('nt-anon').checked;
-  if (!title || !body) { showToast('Título y contenido son obligatorios', 'error'); return; }
-  const { error } = await sb.from('threads').insert({ title, body, category_id: parseInt(cat), author_id: currentUser.id, is_anonymous: anon });
-  if (error) { showToast('Error al publicar', 'error'); return; }
-  closeModal('modal-thread');
-  document.getElementById('nt-title').value = '';
-  document.getElementById('nt-body').value = '';
-  showToast('Hilo publicado');
-  loadDebates();
-  loadSidebar();
-}
+async function deleteVid(id){if(!confirm('¿Eliminar?'))return;await sb.from('videos').delete().eq('id',id);showToast('Eliminado','ok');loadVids();}
+async function playVid(id){nav('vplayer');const{data:v}=await sb.from('videos').select('*').eq('id',id).single();if(!v)return;document.getElementById('vplayer-content').innerHTML=`<div class="vembed" style="border-radius:var(--rl);overflow:hidden;margin-bottom:14px"><iframe src="https://www.youtube.com/embed/${v.youtube_id}?autoplay=1" allowfullscreen allow="autoplay"></iframe></div><h2 style="font-size:19px;font-family:var(--fs);color:var(--tx);margin-bottom:5px">${v.title}</h2>${v.description?`<p style="font-size:13px;color:var(--tx2);line-height:1.7;margin-top:7px">${v.description}</p>`:''}<div style="margin-top:11px;display:flex;align-items:center;gap:9px"><span style="font-size:11px;padding:3px 9px;border-radius:20px;background:var(--pk50);color:var(--pk600)">${v.category||'General'}</span><button class="like-btn" onclick="likeIt('${v.id}','video',this)"><i class="ti ti-heart"></i>${v.likes} me gusta</button></div>`;}
+function openVidModal(){document.getElementById('mo-vid').classList.add('open');}
+async function submitVid(){const u=document.getElementById('vu').value.trim(),t=document.getElementById('vt2').value.trim(),d=document.getElementById('vd').value.trim(),c=document.getElementById('vc2').value,a=document.getElementById('va').checked;const yid=getYtId(u);if(!u||!t){showToast('URL y título obligatorios','err');return;}if(!yid){showToast('URL de YouTube no válida','err');return;}const{error}=await sb.from('videos').insert({title:t,youtube_url:u,youtube_id:yid,description:d,category:c,added_by:user.id,is_anonymous:a});if(error){showToast('Error','err');return;}closeM('mo-vid');['vu','vt2','vd'].forEach(id=>document.getElementById(id).value='');showToast('Video agregado','ok');loadVids();}
 
-// =============================================
-// LIKES
-// =============================================
-async function likeItem(id, type, btn) {
-  const { error } = await sb.from('likes').insert({ user_id: currentUser.id, target_id: id, target_type: type });
-  if (error) return;
-  await sb.from(type === 'thread' ? 'threads' : 'replies').update({ likes: (parseInt(btn.textContent.match(/\d+/)?.[0]||0)+1) }).eq('id', id);
-  btn.classList.add('liked');
-  const num = parseInt(btn.textContent.match(/\d+/)?.[0]||0)+1;
-  btn.innerHTML = `<i class="ti ti-heart"></i> ${num}`;
-}
+// ── WIKI ──
+async function loadWiki(){const l=document.getElementById('wiki-list');l.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';const{data:pages}=await sb.from('wiki_pages').select('*').order('class_number',{ascending:false});if(!pages?.length){l.innerHTML='<div class="empty"><i class="ti ti-notes"></i><p>Sin páginas wiki. ¡Crea la primera!</p></div>';return;}
+const cc=await Promise.all(pages.map(p=>sb.from('wiki_contributions').select('id,profiles(username,avatar_initials)',{count:'exact'}).eq('wiki_page_id',p.id)));
+const cols=['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B'];
+l.innerHTML=pages.map((p,i)=>{const contribs=cc[i].data||[];const cnt=cc[i].count||0;const avs=contribs.slice(0,4).map((c,j)=>{const[bg,co]=cols[j%4].split(':');return`<div class="cav2" style="background:${bg};color:${co}">${c.profiles?.avatar_initials||'??'}</div>`;}).join('');const adm=isAdmin()?`<button class="btn btn-danger btn-sm" style="font-size:10px" onclick="event.stopPropagation();deleteWikiPage('${p.id}')">×</button>`:'';
+return`<div class="wpc" onclick="openWikiDetail('${p.id}')"><div class="wpch"><div><div class="wpct">Clase ${p.class_number||''} — ${p.class_name}</div><div class="wpcm">${cnt} aporte${cnt!==1?'s':''} · ${timeAgo(p.created_at)}</div></div><div style="display:flex;gap:6px;align-items:center"><div class="aib"><i class="ti ti-sparkles"></i>${p.ai_summary?'Sintetizado':'Sin síntesis'}</div>${adm}</div></div>${p.ai_summary?`<div class="wpcs">${p.ai_summary.slice(0,200)}${p.ai_summary.length>200?'...':''}</div>`:''} ${avs?`<div class="cavas">${avs}<span class="ct">${cnt} contribución${cnt!==1?'es':''}</span></div>`:''}</div>`;}).join('');}
 
-// =============================================
-// SIDEBAR
-// =============================================
-async function loadSidebar() {
-  // Hot threads
-  const { data: hot } = await sb.from('threads').select('id,title,likes').order('likes', { ascending: false }).limit(3);
-  const hotEl = document.getElementById('hot-threads');
-  if (hot?.length) hotEl.innerHTML = hot.map(t => `<div class="sw-item" onclick="openThread('${t.id}')" style="cursor:pointer"><i class="ti ti-arrow-up-right"></i>${t.title.slice(0,50)}${t.title.length>50?'...':''}</div>`).join('');
-  else hotEl.innerHTML = '<div class="sw-item"><i class="ti ti-zzz" style="color:var(--coral-400)"></i>Sin actividad aún</div>';
+async function deleteWikiPage(id){if(!confirm('¿Eliminar esta página?'))return;await sb.from('wiki_contributions').delete().eq('wiki_page_id',id);await sb.from('wiki_pages').delete().eq('id',id);showToast('Página eliminada','ok');loadWiki();}
 
-  // Members
-  const { data: members } = await sb.from('profiles').select('username,avatar_initials,avatar_color').limit(8);
-  const colors = ['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B','#FAECE7:#993C1D','#E6F1FB:#185FA5'];
-  const membersEl = document.getElementById('members-list');
-  if (members?.length) membersEl.innerHTML = members.map((m,i) => { const [bg,c]=colors[i%colors.length].split(':'); return `<div class="mav" style="background:${bg};color:${c}" title="${m.username}">${m.avatar_initials||'??'}</div>`; }).join('') + `<span style="font-size:11px;color:var(--teal-600);margin-left:4px">${members.length} miembros</span>`;
-  else membersEl.innerHTML = '<span style="font-size:12px;color:var(--text3)">Sin miembros aún</span>';
+async function openWikiDetail(id){nav('wiki-detail');const c=document.getElementById('wiki-detail');c.innerHTML='<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
+const[{data:page},{data:contribs}]=await Promise.all([sb.from('wiki_pages').select('*').eq('id',id).single(),sb.from('wiki_contributions').select('*,profiles(username,avatar_initials)').eq('wiki_page_id',id).order('created_at',{ascending:false})]);
+if(!page)return;
+c.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+  <button class="back-btn" onclick="nav('wiki')" style="color:var(--tx2)"><i class="ti ti-arrow-left"></i> Wiki</button>
+  <div class="aib"><i class="ti ti-sparkles"></i> IA activa</div></div>
+<h1 style="font-family:var(--fs);font-size:26px;color:var(--tx);margin-bottom:3px">Clase ${page.class_number||''}</h1>
+<h2 style="font-size:17px;color:var(--tx2);font-weight:400;margin-bottom:18px">${page.class_name}</h2>
+${page.ai_summary?`<div class="aisb"><div class="aisl"><i class="ti ti-sparkles"></i>Síntesis generada por IA</div><div class="aist">${page.ai_summary}</div></div>`:`<div class="aisb" style="border-color:var(--br);border-width:0.5px"><div class="aisl" style="color:var(--tx3)"><i class="ti ti-sparkles"></i>Sin síntesis aún</div><div style="font-size:13px;color:var(--tx3)">Agrega aportes y genera la síntesis.</div></div>`}
+<div class="wcb"><div class="wcl"><i class="ti ti-edit"></i>Agregar mis apuntes</div>
+<textarea class="fi fta" id="cb" placeholder="Escribe lo que viste en clase: conceptos, teorías, autores mencionados..." style="min-height:85px"></textarea>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-top:9px">
+  <label class="ach"><input type="checkbox" id="ca" ${isAnon?'checked':''}> Anónimo</label>
+  <div style="display:flex;gap:7px">
+    <button class="btn btn-s btn-sm" onclick="synthesize('${id}')"><i class="ti ti-sparkles"></i> Sintetizar con IA</button>
+    <button class="btn btn-p btn-sm" onclick="submitContrib('${id}')">Publicar</button></div></div></div>
+<div style="font-size:13px;font-weight:500;color:var(--tx2);margin:14px 0 9px">${contribs?.length||0} aportes</div>
+<div>${(contribs||[]).map(co=>{const who=co.is_anonymous?'Anónimo':(co.profiles?.username||'Usuario');return`<div class="ci"><div class="cim">${who} · ${timeAgo(co.created_at)}</div><div class="cib">${co.content.replace(/\n/g,'<br>')}</div></div>`;}).join('')||'<div class="empty" style="padding:18px"><i class="ti ti-pencil"></i><p>Sé el primero en aportar</p></div>'}</div>`;}
 
-  // Wiki preview
-  const { data: wikis } = await sb.from('wiki_pages').select('id,class_name,class_number').order('class_number', { ascending: false }).limit(3);
-  const wikiEl = document.getElementById('wiki-preview');
-  if (wikis?.length) wikiEl.innerHTML = wikis.map(w => `<div class="sw-item" onclick="openWikiDetail('${w.id}')" style="cursor:pointer"><i class="ti ti-file-description"></i>Clase ${w.class_number||''} — ${w.class_name.slice(0,35)}${w.class_name.length>35?'...':''}</div>`).join('');
-  else wikiEl.innerHTML = '<div class="sw-item"><i class="ti ti-sparkles"></i>Sin páginas wiki aún</div>';
+async function submitContrib(wid){const b=document.getElementById('cb').value.trim();const a=document.getElementById('ca').checked;if(!b){showToast('Escribe tus apuntes','err');return;}const{error}=await sb.from('wiki_contributions').insert({wiki_page_id:wid,author_id:user.id,content:b,is_anonymous:a});if(error){showToast('Error','err');return;}document.getElementById('cb').value='';showToast('Aporte publicado','ok');openWikiDetail(wid);}
 
-  // Activity
-  const { data: threads } = await sb.from('threads').select('title,created_at,is_anonymous,profiles(username)').order('created_at', { ascending: false }).limit(3);
-  const { data: libItems } = await sb.from('library').select('title,created_at').order('created_at', { ascending: false }).limit(2);
-  const actEl = document.getElementById('activity-feed');
-  let acts = [];
-  (threads||[]).forEach(t => acts.push({ time: t.created_at, text: `${t.is_anonymous?'Anónimo':t.profiles?.username||'Alguien'} publicó un hilo`, color: '#D85A30' }));
-  (libItems||[]).forEach(l => acts.push({ time: l.created_at, text: `Nuevo recurso: ${l.title?.slice(0,30)}`, color: '#1D9E75' }));
-  acts.sort((a,b) => new Date(b.time)-new Date(a.time));
-  actEl.innerHTML = acts.slice(0,5).map(a => `<div class="sw-item"><div class="act-dot" style="background:${a.color};flex-shrink:0"></div>${a.text}</div>`).join('') || '<div class="sw-item" style="color:var(--text3)"><i class="ti ti-zzz"></i>Sin actividad aún</div>';
-}
-
-// =============================================
-// BIBLIOTECA
-// =============================================
-let libCatFilter = null;
-function filterLib(cat, el) {
-  document.querySelectorAll('#page-biblioteca .ftag').forEach(f => f.classList.remove('active'));
-  el.classList.add('active'); libCatFilter = cat; loadLibrary();
-}
-
-async function loadLibrary() {
-  const grid = document.getElementById('library-grid');
-  grid.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
-  let q = sb.from('library').select('*, profiles(username)').order('created_at', { ascending: false });
-  if (libCatFilter) q = q.eq('category', libCatFilter);
-  const { data } = await q;
-  if (!data?.length) { grid.innerHTML = '<div class="empty"><i class="ti ti-book"></i><p>La biblioteca está vacía. ¡Sube el primer recurso!</p></div>'; return; }
-  grid.innerHTML = data.map(item => `
-    <div class="lib-card" onclick="${item.file_url?`window.open('${item.file_url}','_blank')`:''}">
-      <div class="lib-cover"><i class="ti ti-file-type-pdf"></i></div>
-      <div class="lib-info">
-        <div class="lib-title">${item.title}</div>
-        ${item.author ? `<div class="lib-author">${item.author}</div>` : ''}
-        ${item.description ? `<div class="lib-desc">${item.description}</div>` : ''}
-      </div>
-      <div class="lib-footer">
-        <span class="lib-cat">${item.category||'General'}</span>
-        <button class="like-btn" onclick="event.stopPropagation();likeItem('${item.id}','library',this)"><i class="ti ti-heart"></i> ${item.likes}</button>
-        ${item.file_url ? '<span style="font-size:11px;color:var(--purple-600);margin-left:auto;display:flex;align-items:center;gap:3px"><i class="ti ti-download" style="font-size:13px"></i>Abrir PDF</span>' : ''}
-      </div>
-    </div>`).join('');
-}
-
-function openAddLibrary() { document.getElementById('modal-library').classList.add('open'); }
-
-async function submitLibrary() {
-  const title = document.getElementById('lib-title').value.trim();
-  const author = document.getElementById('lib-author').value.trim();
-  const description = document.getElementById('lib-desc').value.trim();
-  const file_url = document.getElementById('lib-url').value.trim();
-  const category = document.getElementById('lib-cat').value;
-  const anon = document.getElementById('lib-anon').checked;
-  if (!title) { showToast('El título es obligatorio', 'error'); return; }
-  const { error } = await sb.from('library').insert({ title, author, description, file_url, category, uploaded_by: currentUser.id, is_anonymous: anon });
-  if (error) { showToast('Error al guardar', 'error'); return; }
-  closeModal('modal-library');
-  document.getElementById('lib-title').value = ''; document.getElementById('lib-author').value = '';
-  document.getElementById('lib-desc').value = ''; document.getElementById('lib-url').value = '';
-  showToast('Recurso agregado a la biblioteca');
-  loadLibrary();
-}
-
-// =============================================
-// VIDEOTECA
-// =============================================
-function getYoutubeId(url) {
-  const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-  return m ? m[1] : null;
-}
-
-async function loadVideos() {
-  const grid = document.getElementById('video-grid');
-  grid.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando videos...</div>';
-  const { data } = await sb.from('videos').select('*').order('created_at', { ascending: false });
-  if (!data?.length) { grid.innerHTML = '<div class="empty"><i class="ti ti-player-play"></i><p>La videoteca está vacía. ¡Agrega el primer video!</p></div>'; return; }
-  grid.innerHTML = data.map(v => `
-    <div class="vid-card" onclick="playVideo('${v.id}')">
-      <div class="vid-thumb">
-        <img src="https://img.youtube.com/vi/${v.youtube_id}/mqdefault.jpg" alt="${v.title}" loading="lazy">
-        <div class="vid-play"><i class="ti ti-player-play"></i></div>
-      </div>
-      <div class="vid-info">
-        <div class="vid-title">${v.title}</div>
-        ${v.description ? `<div class="vid-desc">${v.description.slice(0,100)}${v.description.length>100?'...':''}</div>` : ''}
-        <div style="margin-top:6px;display:flex;align-items:center;gap:8px">
-          <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:var(--pink-50);color:var(--pink-600)">${v.category||'General'}</span>
-          <button class="like-btn" onclick="event.stopPropagation();likeItem('${v.id}','video',this)"><i class="ti ti-heart"></i> ${v.likes}</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-async function playVideo(id) {
-  navigate('video-player');
-  const { data: v } = await sb.from('videos').select('*').eq('id', id).single();
-  if (!v) return;
-  document.getElementById('video-player-content').innerHTML = `
-    <div class="vid-embed" style="border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px">
-      <iframe src="https://www.youtube.com/embed/${v.youtube_id}?autoplay=1" allowfullscreen allow="autoplay"></iframe>
-    </div>
-    <h2 style="font-size:20px;font-family:var(--font-serif);color:var(--text);margin-bottom:6px">${v.title}</h2>
-    ${v.description ? `<p style="font-size:13px;color:var(--text2);line-height:1.65;margin-top:8px">${v.description}</p>` : ''}
-    <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
-      <span style="font-size:11px;padding:3px 9px;border-radius:20px;background:var(--pink-50);color:var(--pink-600)">${v.category||'General'}</span>
-      <button class="like-btn" onclick="likeItem('${v.id}','video',this)"><i class="ti ti-heart"></i> ${v.likes} me gusta</button>
-    </div>`;
-}
-
-function openAddVideo() { document.getElementById('modal-video').classList.add('open'); }
-
-async function submitVideo() {
-  const url = document.getElementById('vid-url').value.trim();
-  const title = document.getElementById('vid-title').value.trim();
-  const description = document.getElementById('vid-desc').value.trim();
-  const category = document.getElementById('vid-cat').value;
-  const anon = document.getElementById('vid-anon').checked;
-  const youtube_id = getYoutubeId(url);
-  if (!url || !title) { showToast('URL y título son obligatorios', 'error'); return; }
-  if (!youtube_id) { showToast('URL de YouTube no válida', 'error'); return; }
-  const { error } = await sb.from('videos').insert({ title, youtube_url: url, youtube_id, description, category, added_by: currentUser.id, is_anonymous: anon });
-  if (error) { showToast('Error al guardar', 'error'); return; }
-  closeModal('modal-video');
-  document.getElementById('vid-url').value = ''; document.getElementById('vid-title').value = '';
-  document.getElementById('vid-desc').value = '';
-  showToast('Video agregado a la videoteca');
-  loadVideos();
-}
-
-// =============================================
-// WIKI
-// =============================================
-async function loadWiki() {
-  const list = document.getElementById('wiki-list');
-  list.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando wiki...</div>';
-  const { data: pages } = await sb.from('wiki_pages').select('*').order('class_number', { ascending: false });
-  if (!pages?.length) { list.innerHTML = '<div class="empty"><i class="ti ti-notes"></i><p>No hay páginas wiki aún. ¡Crea la primera!</p></div>'; return; }
-  const contribCounts = await Promise.all(pages.map(p => sb.from('wiki_contributions').select('id,profiles(username,avatar_initials)', { count: 'exact' }).eq('wiki_page_id', p.id)));
-  list.innerHTML = pages.map((p, i) => {
-    const contribs = contribCounts[i].data || [];
-    const count = contribCounts[i].count || 0;
-    const avatars = contribs.slice(0,4).map((c,j) => {
-      const colors = ['#E1F5EE:#0F6E56','#EEEDFE:#534AB7','#FBEAF0:#993556','#FAEEDA:#854F0B'];
-      const [bg,c2] = colors[j%4].split(':');
-      return `<div class="cav" style="background:${bg};color:${c2}">${c.profiles?.avatar_initials||'??'}</div>`;
-    }).join('');
-    return `<div class="wiki-page-card" onclick="openWikiDetail('${p.id}')">
-      <div class="wpc-header">
-        <div>
-          <div class="wpc-title">Clase ${p.class_number||''} — ${p.class_name}</div>
-          <div class="wpc-meta">${count} aporte${count!==1?'s':''} · ${timeAgo(p.created_at)}</div>
-        </div>
-        <div class="ai-badge"><i class="ti ti-sparkles"></i>${p.ai_summary ? 'Sintetizado' : 'Sin síntesis'}</div>
-      </div>
-      ${p.ai_summary ? `<div class="wpc-summary">${p.ai_summary.slice(0,200)}${p.ai_summary.length>200?'...':''}</div>` : ''}
-      ${avatars ? `<div class="contrib-avatars">${avatars}<span class="contrib-text">${count} contribución${count!==1?'es':''}</span></div>` : ''}
-    </div>`;
-  }).join('');
-}
-
-async function openWikiDetail(id) {
-  navigate('wiki-detail');
-  const content = document.getElementById('wiki-detail-content');
-  content.innerHTML = '<div class="loading"><i class="ti ti-loader"></i>Cargando...</div>';
-  const [{ data: page }, { data: contribs }] = await Promise.all([
-    sb.from('wiki_pages').select('*').eq('id', id).single(),
-    sb.from('wiki_contributions').select('*, profiles(username,avatar_initials)').eq('wiki_page_id', id).order('created_at', { ascending: false })
-  ]);
-  if (!page) return;
-  content.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <button class="back-btn" onclick="navigate('wiki')" style="color:var(--text2)"><i class="ti ti-arrow-left"></i> Wiki</button>
-      <div class="ai-badge"><i class="ti ti-sparkles"></i> IA activa</div>
-    </div>
-    <h1 style="font-family:var(--font-serif);font-size:28px;color:var(--text);margin-bottom:4px;line-height:1.2">Clase ${page.class_number||''}</h1>
-    <h2 style="font-size:18px;color:var(--text2);font-weight:400;margin-bottom:20px">${page.class_name}</h2>
-    ${page.ai_summary ? `<div class="ai-summary-box">
-      <div class="ai-summary-label"><i class="ti ti-sparkles"></i> Síntesis generada por IA</div>
-      <div class="ai-summary-text">${page.ai_summary}</div>
-    </div>` : `<div class="ai-summary-box" style="border-color:var(--border);border-width:0.5px">
-      <div class="ai-summary-label" style="color:var(--text3)"><i class="ti ti-sparkles"></i> Síntesis pendiente</div>
-      <div style="font-size:13px;color:var(--text3)">Agrega aportes y genera la síntesis con IA.</div>
-    </div>`}
-    <div class="wiki-contrib-box">
-      <div class="wiki-contrib-label"><i class="ti ti-edit"></i> Agregar mis apuntes de esta clase</div>
-      <textarea class="form-input form-textarea" id="contrib-body" placeholder="Escribe lo que viste en clase, conceptos clave, definiciones, teorías mencionadas..." style="min-height:90px"></textarea>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-        <label class="anon-check"><input type="checkbox" id="contrib-anon" ${isAnon?'checked':''}> Aportar anónimamente</label>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-secondary btn-sm" onclick="synthesizeWiki('${id}')"><i class="ti ti-sparkles"></i> Sintetizar con IA</button>
-          <button class="btn btn-primary btn-sm" onclick="submitContrib('${id}')">Publicar aporte</button>
-        </div>
-      </div>
-    </div>
-    <div style="font-size:13px;font-weight:500;color:var(--text2);margin:16px 0 10px">${contribs?.length||0} aportes de compañeros</div>
-    <div class="contrib-list">${(contribs||[]).map(c => {
-      const who = c.is_anonymous ? 'Anónimo' : (c.profiles?.username||'Usuario');
-      return `<div class="contrib-item">
-        <div class="contrib-item-meta">${who} · ${timeAgo(c.created_at)}</div>
-        <div class="contrib-item-body">${c.content.replace(/\n/g,'<br>')}</div>
-      </div>`;
-    }).join('')||'<div class="empty" style="padding:20px"><i class="ti ti-pencil"></i><p>Sé el primero en aportar apuntes</p></div>'}</div>`;
-}
-
-async function submitContrib(wikiId) {
-  const content = document.getElementById('contrib-body').value.trim();
-  const anon = document.getElementById('contrib-anon').checked;
-  if (!content) { showToast('Escribe tus apuntes antes de publicar', 'error'); return; }
-  const { error } = await sb.from('wiki_contributions').insert({ wiki_page_id: wikiId, author_id: currentUser.id, content, is_anonymous: anon });
-  if (error) { showToast('Error al publicar', 'error'); return; }
-  document.getElementById('contrib-body').value = '';
-  showToast('Aporte publicado');
-  openWikiDetail(wikiId);
-}
-
-async function synthesizeWiki(wikiId) {
-  showToast('Sintetizando con IA...');
-  const { data: contribs } = await sb.from('wiki_contributions').select('content').eq('wiki_page_id', wikiId);
-  if (!contribs?.length) { showToast('No hay aportes para sintetizar', 'error'); return; }
-  const allContent = contribs.map((c,i) => `Aporte ${i+1}: ${c.content}`).join('\n\n');
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': '', 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, messages: [{ role: 'user', content: `Eres un asistente académico. Los siguientes son apuntes de estudiantes de psicología sobre una clase. Genera un resumen coherente, estructurado y académico (máximo 300 palabras) que integre todos los aportes:\n\n${allContent}` }] })
+async function synthesize(wid){
+  showToast('Sintetizando con IA...','ok');
+  const{data:contribs}=await sb.from('wiki_contributions').select('content').eq('wiki_page_id',wid);
+  if(!contribs?.length){showToast('Sin aportes para sintetizar','err');return;}
+  const text=contribs.map((c,i)=>`Aporte ${i+1}: ${c.content}`).join('\n\n');
+  try{
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:`Eres un asistente académico de psicología. Los siguientes son apuntes de estudiantes de una clase. Genera un resumen académico, coherente y estructurado de máximo 300 palabras que integre todos los aportes. Usa lenguaje técnico apropiado:\n\n${text}`}]}]})
     });
-    const d = await resp.json();
-    const summary = d.content?.[0]?.text || '';
-    if (summary) {
-      await sb.from('wiki_pages').update({ ai_summary: summary, last_synthesized_at: new Date().toISOString() }).eq('id', wikiId);
-      showToast('Síntesis generada');
-      openWikiDetail(wikiId);
-    }
-  } catch(e) { showToast('Error con la IA', 'error'); }
+    const d=await r.json();
+    const summary=d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(summary){await sb.from('wiki_pages').update({ai_summary:summary,last_synthesized_at:new Date().toISOString()}).eq('id',wid);showToast('Síntesis generada','ok');openWikiDetail(wid);}
+    else showToast('La IA no respondió correctamente','err');
+  }catch(e){showToast('Error con la IA','err');console.error(e);}
 }
 
-function openNewWikiPage() { document.getElementById('modal-wiki-new').classList.add('open'); }
+function openWikiNew(){document.getElementById('mo-wiki-new').classList.add('open');}
+async function submitWikiPage(){const n=document.getElementById('wn').value.trim();const num=document.getElementById('wnum').value;if(!n){showToast('Nombre obligatorio','err');return;}const{error}=await sb.from('wiki_pages').insert({class_name:n,class_number:parseInt(num)||null});if(error){showToast('Error','err');return;}closeM('mo-wiki-new');document.getElementById('wn').value='';document.getElementById('wnum').value='';showToast('Página creada','ok');loadWiki();}
 
-async function submitWikiPage() {
-  const name = document.getElementById('wiki-name').value.trim();
-  const num = document.getElementById('wiki-num').value;
-  if (!name) { showToast('El nombre de la clase es obligatorio', 'error'); return; }
-  const { error } = await sb.from('wiki_pages').insert({ class_name: name, class_number: parseInt(num)||null });
-  if (error) { showToast('Error al crear', 'error'); return; }
-  closeModal('modal-wiki-new');
-  document.getElementById('wiki-name').value = ''; document.getElementById('wiki-num').value = '';
-  showToast('Página wiki creada');
-  loadWiki();
-}
-
-// =============================================
-// UTILS
-// =============================================
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  t.className = `toast ${type}`;
-  t.querySelector('i').className = type === 'error' ? 'ti ti-alert-circle' : 'ti ti-check';
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function timeAgo(date) {
-  const diff = (Date.now() - new Date(date)) / 1000;
-  if (diff < 60) return 'ahora';
-  if (diff < 3600) return `hace ${Math.floor(diff/60)}min`;
-  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
-  if (diff < 604800) return `hace ${Math.floor(diff/86400)}d`;
-  return new Date(date).toLocaleDateString('es-MX', { day:'numeric', month:'short' });
-}
-
-document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+// ── UTILS ──
+function closeM(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+function showToast(msg,type='ok'){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.className=`toast ${type}`;t.querySelector('i').className=type==='err'?'ti ti-alert-circle':'ti ti-check';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+function timeAgo(d){const s=(Date.now()-new Date(d))/1000;if(s<60)return'ahora';if(s<3600)return`hace ${Math.floor(s/60)}min`;if(s<86400)return`hace ${Math.floor(s/3600)}h`;if(s<604800)return`hace ${Math.floor(s/86400)}d`;return new Date(d).toLocaleDateString('es-MX',{day:'numeric',month:'short'});}
 
 init();
 </script>
